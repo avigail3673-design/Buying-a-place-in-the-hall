@@ -24,6 +24,17 @@ exports.bookTicket = async (req, res) => {
     try {
         const { eventId, userId, row, column } = req.body;
 
+        // ==================== בדיקת גבולות האולם (אפשרות א') ====================
+        const MAX_ROWS = 10;
+        const MAX_COLUMNS = 12;
+
+        if (row < 1 || row > MAX_ROWS || column < 1 || column > MAX_COLUMNS) {
+            return res.status(400).json({ 
+                error: `מיקום הכיסא אינו חוקי! האולם מוגבל ל-${MAX_ROWS} שורות ו-${MAX_COLUMNS} כיסאות בלבד.` 
+            });
+        }
+        // ====================================================================
+
         // א. בדיקה האם הכיסא כבר תפוס במופע הזה
         const seatTaken = await Ticket.findOne({ eventId, row, column });
         if (seatTaken) {
@@ -76,7 +87,6 @@ exports.bookTicket = async (req, res) => {
         res.status(500).json({ error: 'שגיאה בתהליך רכישת הכרטיס', details: err.message });
     }
 };
-
 // 3. שליפת כל הכרטיסים של משתמש מסוים (עבור דף "ההזמנות שלי")
 // נתיב מצופה: GET /tickets/user/:userId
 exports.getUserTickets = async (req, res) => {
