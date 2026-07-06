@@ -24,6 +24,11 @@ const userSchema = new mongoose.Schema({
     walletBalance: {
     type: Number,
     default: 0 // כשהמשתמש נרשם לראשונה, יש לו 0 שקלים בארנק
+},
+    role: {
+    type: String,
+    enum: ['customer', 'admin'],
+    default: 'customer' // כל מי שנרשם לאתר הוא לקוח רגיל כברירת מחדל
 }
 }, { 
     timestamps: true 

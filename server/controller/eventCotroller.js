@@ -131,7 +131,7 @@ exports.deleteEvent = async (req, res) => {
             reason: cancellationReason,
             ticketsCanceled: tickets.length,
             refundAmountPerTicket: event.price,
-            detailedMessage: `האירוע בוטל מהסיבה: "${cancellationReason}". ${tickets.length} כרטיסים בוטלו והלקוחות זוכו בארנק הדיגיטלי.`
+            detailedMessage: `האירוע בוטל מהסיבה: "${cancellationReason}". ${tickets.length}// כרטיסים בוטלו והלקוחות זוכו בארנק הדיגיטלי.`
         });
 
     } catch (err) {
