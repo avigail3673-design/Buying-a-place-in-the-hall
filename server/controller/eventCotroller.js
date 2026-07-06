@@ -86,9 +86,17 @@ exports.updateEvent = async (req, res) => {
 };
 
 // 5. מחיקת מופע חכמה + החזר כספי לארנק הדיגיטלי (מנהל)
+// 5. מחיקת מופע חכמה + סיבת ביטול חובה + החזר כספי יעיל (מנהל)
 exports.deleteEvent = async (req, res) => {
     try {
         const eventId = req.params.id;
+        // הבקשה שלך: מקבלים את סיבת הביטול מגוף הבקשה
+        const { cancellationReason } = req.body; 
+
+        // בדיקה שסיבת הביטול אכן הוזנה
+        if (!cancellationReason || cancellationReason.trim() === "") {
+            return res.status(400).json({ error: 'חובה לציין סיבת ביטול כדי למחוק את המופע!' });
+        }
 
         // א. מוצאים את המופע כדי לדעת מה מחיר הכרטיס שלו
         const event = await Event.findById(eventId);
@@ -99,24 +107,31 @@ exports.deleteEvent = async (req, res) => {
         // ב. מוצאים את כל הכרטיסים שנרכשו למופע הזה
         const tickets = await Ticket.find({ eventId: eventId });
 
-        // ג. אם יש כרטיסים, מחזירים לכל לקוח את הכסף לארנק
+        // ג. אם יש כרטיסים, מחזירים לכולם כסף בארנק במכה אחת מהירה!
         if (tickets.length > 0) {
-            for (let ticket of tickets) {
-                // מעדכנים את יתרת הארנק של המשתמש הספציפי שקנה את הכרטיס
-                await User.findByIdAndUpdate(ticket.userId, {
-                    $inc: { walletBalance: event.price } // inc משמעותו Increment - מוסיף ישירות לערך הקיים
-                });
-            }
+            // אוספים את כל ה-IDs הייחודיים של המשתמשים שקנו כרטיס למופע הזה
+            const userIds = tickets.map(ticket => ticket.userId);
+
+            // עדכון יעיל: מוסיף את מחיר הכרטיס לכל המשתמשים שברשימה בריצה אחת בלבד
+            await User.updateMany(
+                { _id: { $in: userIds } },
+                { $inc: { walletBalance: event.price } }
+            );
             
             // ד. מוחקים את כל הכרטיסים של המופע המבוטל
             await Ticket.deleteMany({ eventId: eventId });
         }
 
-        // ה. רק עכשיו מוחקים את המופע עצמו מהמערכת
+        // ה. מוחקים את המופע עצמו מהמערכת
         await Event.findByIdAndDelete(eventId);
 
+        // מחזירים תשובה מפורטת עם סיבת הביטול (כדי שהפרונטאנד יוכל להציג אותה באזהרה)
         res.status(200).json({ 
-            message: `המופע נמחק בהצלחה. ${tickets.length} כרטיסים בוטלו והלקוחות זוכו בארנק הדיגיטלי בסך ₪${event.price} לכרטיס.` 
+            message: `המופע '${event.title}'בוטל ונמחק בהצלחה.`,
+            reason: cancellationReason,
+            ticketsCanceled: tickets.length,
+            refundAmountPerTicket: event.price,
+            detailedMessage: `האירוע בוטל מהסיבה: "${cancellationReason}". ${tickets.length} כרטיסים בוטלו והלקוחות זוכו בארנק הדיגיטלי.`
         });
 
     } catch (err) {
