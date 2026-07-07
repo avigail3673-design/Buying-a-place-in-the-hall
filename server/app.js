@@ -16,13 +16,14 @@ mongoose.connect(process.env.CONECTION_STRING,conectionParams)
 .then(()=>{console.log("conected to db")})
 .catch((err)=>{console.log(err)})
 
-app.listen(4000,()=>{
-    console.log('you are listening to port 4000')
-})
 const cors = require('cors');
-
-app.use(cors()); 
 app.use(express.json());
+app.use(cors()); 
+
 app.use(routerUser)
 app.use(routerEvent);
 app.use(routerTicket);
+
+app.listen(4000,()=>{
+    console.log('you are listening to port 4000')
+})

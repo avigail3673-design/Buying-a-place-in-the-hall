@@ -18,6 +18,7 @@ exports.registerUser = async (req, res) => {
 
         res.status(201).json({ message: 'המשתמש נרשם בהצלחה!', user: newUser });
     } catch (err) {
+       console.log("זה מה שהציק למונגוס בהרשמה:", err.message);
         res.status(400).json({ error: 'שגיאה ברישום המשתמש', details: err.message });
     }
 };
