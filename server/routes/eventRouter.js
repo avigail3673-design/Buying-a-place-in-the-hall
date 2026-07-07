@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // 1. מייבאים את הקונטרולר של המופעים
-const eventController = require('../controllers/eventController');
+const eventController = require('../controller/eventCotroller');
 
 // 2. מייבאים את המידלוורים לבדיקת התחברות והרשאות מנהל
 // (ודאי ששם הקובץ והנתיב מתאימים למקום שבו שמרת את קובץ המידלוור שלך)

@@ -1,32 +1,3 @@
-// const Event=require('../models/eventModel')
-// let getAllEvent=async(req,res)=>{
-//      const E= await Event.find().populate({
-//         path: 'title',
-//         select:{'artist':1,'date':1,'price':1}
-//       });
-//     //  console.log(U.name)
-//     res.status(200).json({event:E})
-// }
-// let saveNewEvent = async (req, res) => {
-//   const Event_id = req.body.EventId;
-//   console.log(Event_id);
-//    if (Event_id) {
-//     const newEvent = new Event(req.body);
-//     await newEvent.save();
-//     console.log(newEvent);
-//     res.send(newEvent);
-
-//     const updatedEvent = await Event.findOneAndUpdate(
-//       { _id: Event_id },
-//       { $push: { orders: newEvent._id } },
-//       { new: true }
-//     );
-//     console.log('updatedEvent');
-//   } else {
-//     res.send('not found');
-//   }
-// };
-
 const Event = require('../models/eventModel');
 const Ticket = require('../models/ticketModel');
 const User = require('../models/userModel');

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // מייבאים את קונטרולר המשתמשים
-const userController = require('../controllers/userController');
+const userController = require('../controller/userController');
 
 // נתיב להרשמה: POST /users/signup
 router.post('/users/signup', userController.registerUser);

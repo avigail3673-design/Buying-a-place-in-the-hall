@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
+const User = require("../models/userModel"); // מייבאים את המודל של המשתמש כדי לבדוק במונגו
 
-// 1. מידלוור שרק בודק אם המשתמש מחובר (הקוד הקיים שלך)
+// 1. המידלוור המקורי שלך - בודק אם המשתמש מחובר
 const checkAuth = (req, res, next) => {
     try {
         if (!req.headers.authorization) {
@@ -9,8 +10,7 @@ const checkAuth = (req, res, next) => {
 
         let token = req.headers.authorization.split(" ")[1];
         
-        // אנחנו מאמתים את הטוקן ושומרים את הנתונים המוצפנים בתוכו על אובייקט req.user
-        // בדרך כלל שומרים בטוקן בזמן ה-Login את ה-id וה-role של המשתמש
+        // פותחים את הטוקן ומחלצים את הנתונים (ה-ID של המשתמש ששמרת שם)
         const decoded = jwt.verify(token, process.env.SECRET);
         req.user = decoded; 
 
@@ -21,16 +21,28 @@ const checkAuth = (req, res, next) => {
     }
 };
 
-// 2. מידלוור חדש שבודק אם המשתמש המחובר הוא מנהל
-const isAdmin = (req, res, next) => {
-    // checkAuth רץ תמיד קודם, אז req.user כבר קיים ומכיל את פרטי המשתמש
-    if (!req.user || req.user.role !== 'admin') {
-        return res.status(403).json({ error: "Access denied. Admins only!" });
+// 2. מידלוור הבדיקה החדש - שולף מהדאטה-בייס ובודק אם הוא מנהל
+const isAdmin = async (req, res, next) => {
+    try {
+        // req.user.id מגיע מהטוקן שפונקציית checkAuth פתחה בשלב הקודם
+        // (ודאי שזה השם שנתת לשדה בטוקן: id או _id)
+        const userId = req.user.id || req.user._id; 
+
+        // הולכים למונגו ובודקים את המשתמש האמיתי בזמן אמת
+        const user = await User.findById(userId);
+
+        if (!user || user.role !== 'admin') {
+            return res.status(403).json({ error: "Access denied. Admins only!" });
+        }
+
+        // אם הוא נמצא במונגו והוא admin - הכל מעולה, ממשיכים לפונקציה בקונטרולר!
+        next();
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: "Server error during admin verification", details: err.message });
     }
-    next();
 };
 
-// מייצאים את שתי הפונקציות כדי שנוכל להשתמש בהן בראוטר
 module.exports = {
     checkAuth,
     isAdmin

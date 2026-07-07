@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const ticketController = require('../controllers/ticketController');
+const ticketController = require('../controller/ticketCotroller');
 
 // 1. נתיב לרכישת כרטיס חדש: POST /tickets/book
 router.post('/tickets/book', ticketController.bookTicket);
