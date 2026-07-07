@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken'); // 1. הוספנו את ייבוא ספרי
 // 1. הרשמת משתמש חדש (Sign Up)
 exports.registerUser = async (req, res) => {
     try {
-        const { fullName, email, phone } = req.body;
+        const { fullName, email, phone, password } = req.body;
 
         // בדיקה קטנה אם המשתמש כבר קיים במערכת עם האימייל הזה
         const userExists = await User.findOne({ email });
@@ -13,7 +13,7 @@ exports.registerUser = async (req, res) => {
         }
 
         // יצירת המשתמש - שדה walletBalance יקבל אוטומטית 0 לפי הדיפולט שהגדרנו בסכמה
-        const newUser = new User({ fullName, email, phone });
+        const newUser = new User({ fullName, email, phone, password });
         await newUser.save();
 
         res.status(201).json({ message: 'המשתמש נרשם בהצלחה!', user: newUser });
@@ -23,30 +23,42 @@ exports.registerUser = async (req, res) => {
     }
 };
 
-// 2. התחברות / זיהוי משתמש (Login פשוט לפי אימייל)
+// 2. התחברות משתמש קיים (Login) - למקרה שצריך לתקן גם פה את הסיסמה
 exports.loginUser = async (req, res) => {
     try {
-        const { email } = req.body;
-        const user = await User.findOne({ email });
+        const { email, password } = req.body;
 
+        // מוצאים את המשתמש לפי המייל
+        const user = await User.findOne({ email });
         if (!user) {
-            return res.status(404).json({ error: 'המשתמש לא נמצא, אנא הירשם קודם' });
+            return res.status(401).json({ error: 'אימייל או סיסמה שגויים' });
         }
 
-        // 2. יצירת טוקן מאובטח שמכיל את ה-ID ואת ה-Role (תפקיד) של המשתמש מתוך בסיס הנתונים
+        // בדיקה שהסיסמה שהוקשה תואמת למה ששמור בבסיס הנתונים
+        if (user.password !== password) {
+            return res.status(401).json({ error: 'אימייל או סיסמה שגויים' });
+        }
+
+        // יצירת טוקן JWT קטן (ודאי שיש לך משתנה סביבה JWT_SECRET, או החליפי למחרוזת קבועה זמנית)
         const token = jwt.sign(
             { id: user._id, role: user.role }, 
-            process.env.SECRET
+            process.env.JWT_SECRET || 'super_secret_key', 
+            { expiresIn: '1d' }
         );
 
-        // מחזירים לפרונטאנד גם את פרטי המשתמש וגם את הטוקן שהוא צריך לשמור
-        res.status(200).json({ 
-            message: 'התחברת בהצלחה!', 
-            user,
-            token // הטוקן הזה יישלח בכל בקשה עתידית ב-Headers
+        res.status(200).json({
+            message: 'התחברות הצליחה!',
+            token,
+            user: {
+                _id: user._id,
+                fullName: user.fullName,
+                email: user.email,
+                role: user.role || 'customer'
+            }
         });
     } catch (err) {
-        res.status(500).json({ error: 'שגיאה בתהליך ההתחברות', details: err.message });
+        console.log("שגיאה בהתחברות:", err.message);
+        res.status(500).json({ error: 'שגיאה פנימית בשרת' });
     }
 };
 
