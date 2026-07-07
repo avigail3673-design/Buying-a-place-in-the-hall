@@ -1,0 +1,294 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: #06060c;
+    color: #ffffff;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+    padding: 30px 20px;
+}
+
+/* זרקורים ואפקטי תאורה */
+.spotlight {
+    position: absolute;
+    top: -50px;
+    width: 0;
+    height: 0;
+    border-left: 200px solid transparent;
+    border-right: 200px solid transparent;
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: 1;
+    filter: blur(30px);
+}
+
+.spotlight-left {
+    left: 5%;
+    border-bottom: 900px solid #7c4dff; /* כחול-סגול עמוק */
+    transform: rotate(25deg);
+    animation: swingLeft 8s ease-in-out infinite alternate;
+}
+
+.spotlight-right {
+    right: 5%;
+    border-bottom: 900px solid #ff2a5f; /* אדום ניאון עוצמתי */
+    transform: rotate(-25deg);
+    animation: swingRight 8s ease-in-out infinite alternate;
+}
+
+.ambient-glow {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 400px;
+    background: radial-gradient(circle, rgba(124,77,255,0.1) 0%, rgba(255,42,95,0.05) 50%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+@keyframes swingLeft { 0% { transform: rotate(15deg); } 100% { transform: rotate(35deg); } }
+@keyframes swingRight { 0% { transform: rotate(-15deg); } 100% { transform: rotate(-35deg); } }
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+}
+
+/* כותרת הדף */
+.hall-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 20px;
+    margin-bottom: 40px;
+}
+
+.hall-header h1 {
+    font-size: 2rem;
+    text-shadow: 0 0 15px rgba(255, 42, 95, 0.6);
+    background: linear-gradient(90deg, #ff2a5f, #7c4dff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.user-status-bar {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 20px;
+    border-radius: 30px;
+    border: 1px solid rgba(124, 77, 255, 0.3);
+    font-size: 0.95rem;
+    display: flex;
+    gap: 20px;
+}
+
+/* הבמה עם פרספקטיבה תלת ממדית */
+.hall-wrapper {
+    perspective: 800px;
+    margin-bottom: 40px;
+}
+
+.stage-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 50px;
+}
+
+.stage {
+    width: 70%;
+    height: 45px;
+    background: linear-gradient(180deg, #151525 0%, #0c0c16 100%);
+    border: 2px solid #ff2a5f;
+    box-shadow: 0 0 30px rgba(255, 42, 95, 0.4), inset 0 0 15px rgba(124, 77, 255, 0.3);
+    border-radius: 4px;
+    transform: rotateX(-30deg);
+    color: rgba(255, 255, 255, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    letter-spacing: 3px;
+    font-size: 1.1rem;
+}
+
+.stage-light-reflection {
+    width: 50%;
+    height: 15px;
+    background: linear-gradient(to bottom, rgba(255, 42, 95, 0.15), transparent);
+    filter: blur(5px);
+}
+
+/* מטריצת הכיסאות */
+.seating-plan {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    align-items: center;
+    transform: rotateX(12deg); /* יוצר זווית שיפוע כמו באולם אמיתי */
+}
+
+.seat-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.row-label {
+    width: 30px;
+    font-weight: bold;
+    color: #7c4dff;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+/* 🛋️ עיצוב הכיסאות המפוארים (3D) */
+.seat {
+    width: 32px;
+    height: 30px;
+    background: #1e1e30;
+    border-radius: 6px 6px 3px 3px;
+    position: relative;
+    cursor: pointer;
+    border: 1px solid #2e2e4a;
+    box-shadow: inset 0 3px 0 rgba(255,255,255,0.1), 0 3px 5px rgba(0,0,0,0.5);
+    transition: all 0.2s ease;
+}
+
+/* משענות יד של הכיסא */
+.seat::before, .seat::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    width: 4px;
+    height: 16px;
+    background: #2b2b45;
+    border-radius: 2px;
+}
+.seat::before { left: -3px; }
+.seat::after { right: -3px; }
+
+/* כרית המושב התחתונה */
+.seat-cushion {
+    position: absolute;
+    bottom: 2px;
+    left: 2px;
+    right: 2px;
+    height: 12px;
+    background: #27273f;
+    border-radius: 2px;
+    box-shadow: inset 0 -2px 3px rgba(0,0,0,0.4);
+}
+
+/* מצבי כיסא: זמין, תפוס, נבחר */
+.seat.available:hover {
+    background: #448aff;
+    border-color: #448aff;
+    box-shadow: 0 0 10px rgba(68, 138, 255, 0.8);
+}
+.seat.available:hover .seat-cushion { background: #64a1ff; }
+
+.seat.selected {
+    background: #ff2a5f !important; /* אדום זוהר לנבחר */
+    border-color: #ff2a5f !important;
+    box-shadow: 0 0 15px rgba(255, 42, 95, 0.8) !important;
+}
+.seat.selected .seat-cushion { background: #ff6087 !important; }
+.seat.selected::before, .seat.selected::after { background: #b3163d; }
+
+.seat.occupied {
+    background: #11111a !important; /* תפוס חשוך ומת */
+    border-color: #222 !important;
+    cursor: not-allowed;
+    opacity: 0.4;
+}
+.seat.occupied .seat-cushion { background: #1a1a26; }
+.seat.occupied::before, .seat.occupied::after { background: #1a1a26; }
+
+/* תפריט סיכום וקנייה */
+.booking-footer {
+    margin-top: 50px;
+    background: rgba(12, 12, 24, 0.85);
+    border: 1px solid rgba(124, 77, 255, 0.2);
+    padding: 25px;
+    border-radius: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(10px);
+}
+
+.legend {
+    display: flex;
+    gap: 25px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+}
+
+.seat-sample {
+    width: 20px;
+    height: 18px;
+    border-radius: 4px;
+}
+.seat-sample.available { background: #1e1e30; border: 1px solid #2e2e4a; }
+.seat-sample.selected { background: #ff2a5f; box-shadow: 0 0 8px #ff2a5f; }
+.seat-sample.occupied { background: #11111a; opacity: 0.4; }
+
+.checkout-panel {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.checkout-info {
+    text-align: left;
+}
+.checkout-info p {
+    margin-bottom: 5px;
+    font-size: 1rem;
+}
+#total-price {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #ff2a5f;
+}
+
+.buy-btn {
+    padding: 14px 35px;
+    background: linear-gradient(90deg, #ff2a5f, #7c4dff);
+    border: none;
+    border-radius: 30px;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(255, 42, 95, 0.3);
+    transition: all 0.3s ease;
+}
+
+.buy-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 42, 95, 0.6);
+}
+
+.buy-btn:disabled {
+    background: #252538;
+    color: #666;
+    cursor: not-allowed;
+    box-shadow: none;
+}

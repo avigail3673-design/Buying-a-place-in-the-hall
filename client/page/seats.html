@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>בחירת מקומות באולם | אולם המופעים</title>
+    <link rel="stylesheet" href="../css/seats.css">
+</head>
+<body>
+
+    <div class="spotlight spotlight-left"></div>
+    <div class="spotlight spotlight-right"></div>
+    <div class="ambient-glow"></div>
+
+    <div class="container">
+        <header class="hall-header">
+            <h1 id="event-title-display">טוען פרטי מופע...</h1>
+            <div class="user-status-bar">
+                <span id="user-name-display">משתמש: אורח</span>
+                <span id="user-wallet-display">יתרה בארנק: ₪0</span>
+            </div>
+        </header>
+
+        <div class="hall-wrapper">
+            <div class="stage-container">
+                <div class="stage">בָּמָה / STAGE</div>
+                <div class="stage-light-reflection"></div>
+            </div>
+
+            <div class="seating-plan" id="seating-grid"></div>
+        </div>
+
+        <footer class="booking-footer">
+            <div class="legend">
+                <div class="legend-item"><div class="seat-sample available"></div><span>פנוי</span></div>
+                <div class="legend-item"><div class="seat-sample selected"></div><span>נבחר</span></div>
+                <div class="legend-item"><div class="seat-sample occupied"></div><span>תפוס</span></div>
+            </div>
+
+            <div class="checkout-panel">
+                <div class="checkout-info">
+                    <p>מושבים שנבחרו: <span id="selected-seats-list">-</span></p>
+                    <p>סה"כ לתשלום: <span id="total-price">₪0</span> <small>(ניתן לבחור עד 5 מושבים)</small></p>
+                </div>
+                <button class="buy-btn" id="checkout-button" disabled>אשר רכישה ושחרר כרטיסים</button>
+            </div>
+        </footer>
+    </div>
+
+    <script src="../js/seats.js"></script>
+</body>
+</html>
