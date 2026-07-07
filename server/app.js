@@ -1,9 +1,10 @@
-const EXPRESS=require('express');
-const app=EXPRESS();
+const express = require('express');
+const app=express();
 const mongoose=require('mongoose');
 
 const env=require('dotenv')
 env.config();
+app.use(express.static('../client'));
 const routerUser=require('./routes/userRouter')
 const routerEvent = require('./routes/eventRouter');
 const routerTicket = require('./routes/ticketRouter');
@@ -21,7 +22,7 @@ app.listen(4000,()=>{
 const cors = require('cors');
 
 app.use(cors()); 
-app.use(EXPRESS.json());
+app.use(express.json());
 app.use(routerUser)
 app.use(routerEvent);
 app.use(routerTicket);
