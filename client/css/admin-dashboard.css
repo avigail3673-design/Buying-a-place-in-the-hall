@@ -1,0 +1,184 @@
+ :root {
+            --primary-blue: #0f172a; /* כחול עמוק מאוד */
+            --accent-blue: #2563eb;  /* כחול מנצנץ */
+            --bg-light: #f8fafc;
+            --text-dark: #1e293b;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* סרגל עליון */
+        .navbar {
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .navbar h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .logout-btn {
+            background-color: transparent;
+            color: white;
+            border: 1px solid white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: white;
+            color: var(--primary-blue);
+        }
+
+        /* מיכל ראשי */
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* כרטיסי סטטיסטיקה */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border-right: 5px solid var(--accent-blue);
+        }
+
+        .stat-card h3 {
+            margin: 0 0 10px 0;
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        .stat-card .number {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--primary-blue);
+        }
+
+        /* כותרת טבלה וכפתור הוספה */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .add-event-btn {
+            background-color: var(--accent-blue);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+            transition: opacity 0.2s;
+        }
+
+        .add-event-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* טבלת אירועים */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: right;
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: #475569;
+            padding: 16px;
+            font-weight: 600;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-dark);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* כפתורי פעולה בטבלה */
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 5px;
+            transition: all 0.2s;
+        }
+
+        .edit-btn {
+            background-color: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .edit-btn:hover:not(:disabled) {
+            background-color: #bae6fd;
+        }
+
+        .delete-btn {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .delete-btn:hover:not(:disabled) {
+            background-color: #fecaca;
+        }
+
+        /* עיצוב כפתור חסום (עבור אירועים שעברו) */
+        .action-btn:disabled {
+            background-color: #f1f5f9;
+            color: #94a3b8;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-active { background-color: #dcfce7; color: #15803d; }
+        .status-past { background-color: #f1f5f9; color: #64748b; }

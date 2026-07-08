@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ניהול אירוע | פורטל אירועים</title>
+<link rel="stylesheet" href="../css/admin-event-form.css">
+</head>
+<body>
+
+    <div class="navbar">
+        <h1 id="page-title">יצירת אירוע חדש</h1>
+        <a href="admin-dashboard.html" class="back-btn">חזרה ללוח הבקרה</a>
+    </div>
+
+    <div style="padding: 40px 20px;">
+        <div class="form-container">
+            <div class="form-header">
+                <h2 id="form-title">פרטי האירוע</h2>
+            </div>
+
+            <form id="event-form">
+                <div class="input-group">
+                    <label for="title">שם האירוע</label>
+                    <input type="text" id="title" placeholder="לדוגמה: הופעה חיה, כנס הייטק..." required>
+                </div>
+
+                <div class="row">
+                    <div class="input-group">
+                        <label for="date">תאריך ושעה</label>
+                        <input type="datetime-local" id="date" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="location">מיקום / שם האולם</label>
+                        <input type="text" id="location" placeholder="לדוגמה: האולם המרכזי" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="input-group">
+                        <label for="price">מחיר כרטיס (בש"ח)</label>
+                        <input type="number" id="price" min="0" placeholder="0" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="totalSeats">כמות מקומות באולם</label>
+                        <input type="number" id="totalSeats" min="1" placeholder="לדוגמה: 200" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="description">תיאור האירוע (אופציונלי)</label>
+                    <textarea id="description" rows="4" placeholder="ספרו קצת על האירוע..."></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn" id="save-btn">פתחת אירוע חדש</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/admin-event-form.js"></script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+        :root {
+            --primary-blue: #0f172a;
+            --accent-blue: #2563eb;
+            --bg-light: #f8fafc;
+            --text-dark: #1e293b;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* סרגל עליון */
+        .navbar {
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h1 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .back-btn {
+            background-color: transparent;
+            color: white;
+            text-decoration: none;
+            border: 1px solid white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background-color: white;
+            color: var(--primary-blue);
+        }
+
+        /* מיכל הטופס */
+        .form-container {
+            max-width: 600px;
+            margin: 5px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .form-header {
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+
+        .form-header h2 {
+            margin: 0;
+            color: var(--primary-blue);
+        }
+
+        /* קבוצות קלט */
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .input-group input, .input-group textarea, .input-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        .input-group input:focus, .input-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        /* כפתור שליחה */
+        .submit-btn {
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+            transition: opacity 0.2s;
+        }
+
+        .submit-btn:hover {
+            opacity: 0.9;
+        }

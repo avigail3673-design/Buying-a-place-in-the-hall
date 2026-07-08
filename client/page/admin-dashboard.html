@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>לוח בקרה מנהל | פורטל אירועים</title>
+    <link rel="stylesheet" href="../css/admin-dashboard.css">
+</head>
+<body>
+
+    <div class="navbar">
+        <h1>לוח בקרה למנהל האולם</h1>
+        <div>
+            <span id="admin-name" style="margin-left: 15px; font-weight: bold;"></span>
+            <button class="logout-btn" id="logout-btn">התנתקות</button>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>אירועים פעילים</h3>
+                <div class="number" id="stat-active-events">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>סה"כ כרטיסים שנמכרו</h3>
+                <div class="number" id="stat-tickets-sold">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>אירועים שעברו</h3>
+                <div class="number" id="stat-past-events">0</div>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <h2>ניהול אירועים במערכת</h2>
+            <a href="admin-event-form.html" class="add-event-btn">+ יצירת אירוע חדש</a>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>שם האירוע</th>
+                        <th>תאריך ושעה</th>
+                        <th>מיקום</th>
+                        <th>מחיר</th>
+                        <th>סטטוס</th>
+                        <th>פעולות</th>
+                    </tr>
+                </thead>
+                <tbody id="events-table-body">
+                    </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <script src="../js/admin-dashboard.js"></script>
+</body>
+</html>
