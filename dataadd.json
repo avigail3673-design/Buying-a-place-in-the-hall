@@ -1,0 +1,74 @@
+[
+  {
+    "title": "חנן בן ארי - המופע המרכזי",
+    "artist": "חנן בן ארי",
+    "date": "2026-08-15T20:30:00.000Z",
+    "location": "היכל התרבות",
+    "price": 180,
+    "totalSeats": 100,
+    "availableSeats": 100
+  },
+  {
+    "title": "עומר אדם באמפי",
+    "artist": "עומר אדם",
+    "date": "2026-08-22T21:00:00.000Z",
+    "location": "אמפיתיאטרון קיסריה",
+    "price": 220,
+    "totalSeats": 120,
+    "availableSeats": 120
+  },
+  {
+    "title": "ישי ריבו - מופע קיץ",
+    "artist": "ישי ריבו",
+    "date": "2026-09-05T19:30:00.000Z",
+    "location": "בריכת הסולטן",
+    "price": 150,
+    "totalSeats": 80,
+    "availableSeats": 80
+  },
+  {
+    "title": "סטנדאפ - אדיר מילר",
+    "artist": "אדיר מילר",
+    "date": "2026-09-12T22:00:00.000Z",
+    "location": "היכל מנורה",
+    "price": 165,
+    "totalSeats": 150,
+    "availableSeats": 150
+  },
+  {
+    "title": "שרק וצוקוש - מופע היפ הופ",
+    "artist": "שרק וצוקוש",
+    "date": "2026-09-20T20:00:00.000Z",
+    "location": "מועדון הבארבי",
+    "price": 110,
+    "totalSeats": 90,
+    "availableSeats": 90
+  },
+  {
+    "title": "אברהם פריד מארח",
+    "artist": "אברהם פריד",
+    "date": "2026-10-02T19:00:00.000Z",
+    "location": "בנייני האומה",
+    "price": 190,
+    "totalSeats": 110,
+    "availableSeats": 110
+  },
+  {
+    "title": "אושר כהן - מופע חורף",
+    "artist": "אושר כהן",
+    "date": "2026-10-18T21:15:00.000Z",
+    "location": "האנגר 11",
+    "price": 175,
+    "totalSeats": 130,
+    "availableSeats": 130
+  },
+  {
+    "title": "סטנדאפ - גיא הוכמן",
+    "artist": "גיא הוכמן",
+    "date": "2026-11-01T21:30:00.000Z",
+    "location": "זאפה תל אביב",
+    "price": 120,
+    "totalSeats": 70,
+    "availableSeats": 70
+  }
+]

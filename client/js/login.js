@@ -33,8 +33,14 @@ if (loginForm) {
 
                 alert(`ברוך הבא, ${data.user.fullName}!`);
                 
-                // העברה לעמוד הבא
-                window.location.href = 'events.html'; 
+                // הנתב החדש (ההפרדה בין מנהל ללקוח):
+                if (data.user.role === 'admin') {
+                    // אם המשתמש הוא מנהל - מעבירים אותו לדאשבורד הניהול
+                    window.location.href = 'admin-dashboard.html'; 
+                } else {
+                    // אם המשתמש הוא לקוח רגיל - מעבירים אותו לעמוד בחירת המקומות
+                    window.location.href = 'events.html'; 
+                }
             } else {
                 alert(data.error || 'שגיאה בהתחברות');
             }
@@ -89,4 +95,4 @@ if (registerForm) {
             alert('שגיאה בתקשורת עם השרת בזמן ההרשמה');
         }
     });
-}   
+}
