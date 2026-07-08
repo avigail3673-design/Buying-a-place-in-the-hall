@@ -88,3 +88,37 @@ exports.getUserProfile = async (req, res) => {
         res.status(500).json({ error: 'שגיאה בשליפת פרטי המשתמש', details: err.message });
     }
 };
+// 4. פונקציה להטענת הארנק הדיגיטלי במונגו
+exports.topupWallet = async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const { amount } = req.body;
+
+        // בדיקת בטיחות: שהסכום הגיוני ותואם לחוקים שרצית
+        if (!amount || amount < 100 || amount > 100000) {
+            return res.status(400).json({ error: 'סכום הטענה לא תקין. יש להזין בין 100 ל-100,000 ש"ח.' });
+        }
+
+        // מוצאים את המשתמש לפי ה-ID ומעדכנים במונגו
+        // אנחנו משתמשים ב-$inc כדי להוסיף את הסכום ליתרה הקיימת (ולא לדרוס אותה)
+        const updatedUser = await userModel.findByIdAndUpdate(
+            userId,
+            { $inc: { walletBalance: amount } }, 
+            { new: true } // מחזיר לנו את הדוקומנט המעודכן מהדאטאבייס
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ error: 'משתמש לא נמצא במערכת' });
+        }
+
+        // מחזירים תשובה שהכל הצליח עם היתרה החדשה
+        res.status(200).json({ 
+            message: 'הארנק הוטען בהצלחה!', 
+            newBalance: updatedUser.walletBalance 
+        });
+
+    } catch (err) {
+        console.error('שגיאה בשרת בעת הטענת ארנק:', err);
+        res.status(500).json({ error: 'שגיאה פנימית בשרת בעת הטענת הארנק' });
+    }
+};

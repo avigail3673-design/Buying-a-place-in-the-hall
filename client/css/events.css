@@ -38,7 +38,8 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.events-container {
+/* 🟢 תיקון: מתאים ל-events-grid שב-JavaScript שלך */
+#events-grid, .events-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 30px;
@@ -53,49 +54,96 @@ body {
     color: #aaa;
 }
 
-/* עיצוב כרטיס מופע בודד */
+/* עיצוב כרטיס מופע בודד - מותאם לתמונות */
 .event-card {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 16px;
-    padding: 25px;
+    overflow: hidden; /* דואג שפינות התמונה ייחתכו לפי הקימור של הכרטיס */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
 .event-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 15px 30px rgba(124, 77, 255, 0.2); /* צל סגול זוהר עדין במיקוד */
     border-color: #7c4dff;
+}
+
+/* 🟥 ריבוע התמונה המקצועי בתוך ה-Dark Mode */
+.event-img-container {
+    width: 100%;
+    aspect-ratio: 1 / 1; /* יוצר ריבוע מושלם */
+    overflow: hidden;
+    background-color: rgba(255, 255, 255, 0.02);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.event-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* מותח את התמונה בלי לעוות */
+    transition: transform 0.3s ease;
+}
+
+.event-card:hover .event-img {
+    transform: scale(1.04); /* אפקט זום קטן בריחוף */
+}
+
+/* ריפוד פנימי לטקסטים */
+.event-content {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
 }
 
 .event-title {
     font-size: 1.5rem;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     color: #fff;
 }
 
 .event-artist {
     font-size: 1.1rem;
-    color: #7c4dff;
-    margin-bottom: 15px;
+    color: #448aff; /* כחול/תכלת זוהר יפה */
+    margin-bottom: 12px;
     font-weight: 600;
 }
 
-.event-details {
+/* עיצוב התיאור החדש של חברה שלך */
+.event-description {
     font-size: 0.95rem;
-    color: #aaa;
-    margin-bottom: 20px;
+    color: #b0b0bc;
     line-height: 1.5;
+    margin-bottom: 15px;
+    flex-grow: 1; /* דוחף את מחיר והכפתור תמיד למטה */
+}
+
+.event-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.9rem;
+    color: #aaa;
+    margin-bottom: 15px;
+    background: rgba(255, 255, 255, 0.02);
+    padding: 8px 12px;
+    border-radius: 8px;
+}
+
+/* תחתית הכרטיס */
+.event-footer {
+    margin-top: auto;
 }
 
 .event-price {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     font-weight: bold;
-    color: #448aff;
+    color: #e60058; 
     margin-bottom: 15px;
 }
 
@@ -109,9 +157,230 @@ body {
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: opacity 0.2s;
+    transition: opacity 0.2s, transform 0.1s;
 }
 
 .order-btn:hover {
     opacity: 0.9;
+}
+
+.order-btn:active {
+    transform: scale(0.98);
+}
+
+/* ========================================================
+   💳 עיצוב כרטיס הארנק הצידי - Neon Dark Mode
+   ======================================================== */
+.wallet-card-sidebar {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(68, 138, 255, 0.2); /* גבול כחול זוהר עדין */
+    border-radius: 16px;
+    padding: 25px;
+    text-align: center;
+    max-width: 320px;
+    margin: 0 auto 35px auto;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37),
+                0 0 15px rgba(68, 138, 255, 0.05); /* הילה כחולה קטנה */
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    transition: all 0.3s ease;
+}
+
+.wallet-card-sidebar:hover {
+    border-color: #448aff;
+    box-shadow: 0 8px 32px 0 rgba(124, 77, 255, 0.2), 
+                0 0 20px rgba(68, 138, 255, 0.2); /* זוהר מתחזק בריחוף */
+    transform: translateY(-3px);
+}
+
+.wallet-card-sidebar h3 {
+    font-size: 1.2rem;
+    color: #fff;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+}
+
+.wallet-balance-amount {
+    font-size: 2.2rem;
+    font-weight: 800;
+    background: linear-gradient(90deg, #00e676, #448aff); /* שילוב צבעים יוקרתי ליתרה */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+    margin-top: 8px;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* כפתור פתיחת הפופאפ */
+.topup-btn {
+    width: 100%;
+    margin-top: 20px;
+    padding: 12px;
+    background: linear-gradient(90deg, #7c4dff, #448aff);
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(124, 77, 255, 0.3);
+    transition: all 0.2s ease;
+}
+
+.topup-btn:hover {
+    box-shadow: 0 0 20px rgba(68, 138, 255, 0.6);
+    opacity: 0.95;
+    transform: scale(1.02);
+}
+
+/* ========================================================
+   🍿 עיצוב החלון הקופץ (Topup Modal) - אפקט זכוכית עתידני
+   ======================================================== */
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 2000; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    background-color: rgba(10, 10, 25, 0.75); /* רקע כהה עמוק */
+    backdrop-filter: blur(12px); /* טשטוש רקע מטורף של כל מה שמאחורה */
+    -webkit-backdrop-filter: blur(12px);
+    animation: fadeIn 0.4s ease;
+}
+
+.modal-content {
+    background: rgba(20, 20, 35, 0.85); /* זכוכית כהה */
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.5), 
+                0 0 30px rgba(124, 77, 255, 0.15); /* הילה סגולה/כחולה עמוקה */
+    color: white;
+    margin: 8% auto; 
+    padding: 35px;
+    border-radius: 24px;
+    width: 90%;
+    max-width: 460px;
+    direction: rtl;
+    position: relative;
+    animation: slideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* ❌ כפתור סגירה אדום-אש זוהר ומעוצב */
+.close-modal {
+    position: absolute;
+    top: 20px;
+    left: 25px;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 32px;
+    font-weight: 300;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    line-height: 1;
+}
+
+.close-modal:hover {
+    color: #ff4a4a;
+    text-shadow: 0 0 10px rgba(255, 74, 74, 0.6); /* נגיעה אדומה זוהרת */
+}
+
+.modal-content h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    background: linear-gradient(90deg, #fff, #448aff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 5px;
+}
+
+.modal-subtitle {
+    font-size: 0.85rem;
+    color: #8a8a9e;
+    margin-bottom: 25px;
+}
+
+/* שדות קלט (Inputs) וטפסים */
+.form-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+.modal-content label {
+    font-size: 0.9rem;
+    color: #ccc;
+    font-weight: 500;
+    padding-right: 4px;
+}
+
+/* שדות הטקסט הכהים והאינטראקטיביים */
+.modal-content input {
+    padding: 14px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: white;
+    font-size: 1rem;
+    transition: all 0.25s ease;
+}
+
+/* אפקט פוקוס - תכלת זוהר מטורף לשדה הנבחר */
+.modal-content input:focus {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: #448aff;
+    box-shadow: 0 0 12px rgba(68, 138, 255, 0.4);
+    outline: none;
+}
+
+/* כפתור אישור ההטענה המאובטח */
+.submit-wallet-btn {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(90deg, #448aff, #7c4dff);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    box-shadow: 0 4px 20px rgba(68, 138, 255, 0.25);
+    transition: all 0.2s ease;
+}
+
+.submit-wallet-btn:hover {
+    box-shadow: 0 0 25px rgba(124, 77, 255, 0.5);
+    opacity: 0.95;
+    transform: translateY(-2px);
+}
+
+.submit-wallet-btn:active {
+    transform: translateY(0);
+}
+
+/* אנימציות כניסה חלקות */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }

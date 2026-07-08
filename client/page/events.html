@@ -13,10 +13,48 @@
         <div class="user-status" id="user-status">
             </div>
     </header>
+      <div id="wallet-sidebar-card" class="wallet-card-sidebar">
+      <h3>💳 הארנק הדיגיטלי שלך</h3>
+      <p id="user-wallet-status">טוען יתרה...</p>
+      <button id="open-topup-btn" class="topup-btn">הטענת הארנק</button>
+      </div>
 
     <main class="events-container" id="events-grid">
         <p class="loading">טוען מופעים מהשרת...</p>
     </main>
+    
+<div id="topup-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2>💳 הטענת ארנק דיגיטלי</h2>
+        <p class="modal-subtitle">הסכום המותר להטענה: בין 100 ₪ ל-100,000 ₪</p>
+        
+        <form id="topup-form">
+            <div class="form-group">
+                <label>סכום להטענה (₪):</label>
+                <input type="number" id="topup-amount" placeholder="לדוגמה: 500" required>
+            </div>
+            
+            <div class="form-group">
+                <label>מספר כרטיס אשראי:</label>
+                <input type="text" id="card-number" placeholder="16 ספרות ללא רווחים" maxlength="16" required>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>תוקף (חודש/שנה):</label>
+                    <input type="month" id="card-expiry" required>
+                </div>
+                <div class="form-group">
+                    <label>CVV (3 ספרות בגב הכרטיס):</label>
+                    <input type="text" id="card-cvv" placeholder="000" maxlength="3" required>
+                </div>
+            </div>
+            
+            <button type="submit" class="submit-wallet-btn">אשר הטענה מאובטחת</button>
+        </form>
+    </div>
+</div>
 
     <script src="../js/events.js"></script>
 </body>
