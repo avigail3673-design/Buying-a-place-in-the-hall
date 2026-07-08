@@ -13,4 +13,7 @@ router.post('/users/login', userController.loginUser);
 // נתיב לקבלת פרופיל (ויתרת ארנק) לפי ה-ID שלו: GET /users/:id
 router.get('/users/:id', userController.getUserProfile);
 
+// נתיב לעדכון והטענת הארנק הדיגיטלי: PUT /users/:id/topup
+router.put('/users/:id/topup', userController.topupWallet);
+
 module.exports = router;
