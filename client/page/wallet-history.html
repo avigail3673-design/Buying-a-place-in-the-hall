@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ניהול חשבון וארנק דיגיטלי</title>
+    <link rel="stylesheet" href="../css/wallet-history.css">
+</head>
+<body>
+
+    <header class="main-header">
+        <h1>💳 תדפיס עו"ש - הארנק הדיגיטלי שלי</h1>
+        <button class="back-btn" onclick="window.location.href='events.html'">➡️ חזרה למופעים</button>
+    </header>
+
+    <main class="dashboard-container">
+        <section class="summary-cards">
+            <div class="card balance-card">
+                <h3>היתרה הנוכחית</h3>
+                <p id="total-balance">₪0</p>
+            </div>
+            <div class="card income-card">
+                <h3>סך הכל טעינות (+)</h3>
+                <p id="total-income">₪0</p>
+            </div>
+            <div class="card expense-card">
+                <h3>סך הכל רכישות (-)</h3>
+                <p id="total-expense">₪0</p>
+            </div>
+        </section>
+
+        <section class="history-section">
+            <h2>📝 פירוט פעולות אחרונות</h2>
+            <div class="table-container">
+                <table class="bank-table">
+                    <thead>
+                        <tr>
+                            <th>תאריך ושעה</th>
+                            <th>תיאור הפעולה</th>
+                            <th>סוג</th>
+                            <th>סכום</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transaction-rows">
+                        <tr>
+                            <td colspan="4" class="loading-text">טוען נתוני חשבון...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script src="../js/wallet-history.js"></script>
+</body>
+</html>
