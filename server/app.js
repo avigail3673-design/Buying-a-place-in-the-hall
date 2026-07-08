@@ -8,6 +8,10 @@ app.use(express.static('../client'));
 const routerUser=require('./routes/userRouter')
 const routerEvent = require('./routes/eventRouter');
 const routerTicket = require('./routes/ticketRouter');
+// ייבוא הראוטר החדש (תוסיפי למעלה בשרת הראשי)
+const routertransaction = require('./routes/transactionRouter');
+
+
 const conectionParams={
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -23,7 +27,7 @@ app.use(cors());
 app.use(routerUser)
 app.use(routerEvent);
 app.use(routerTicket);
-
+app.use(routertransaction);
 app.listen(4000,()=>{
     console.log('you are listening to port 4000')
 })

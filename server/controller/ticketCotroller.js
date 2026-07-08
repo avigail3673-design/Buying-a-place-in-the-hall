@@ -24,7 +24,7 @@ exports.bookTicket = async (req, res) => {
     try {
         const { eventId, userId, row, column } = req.body;
 
-        // ==================== בדיקת גבולות האולם (אפשרות א') ====================
+        // ==================== בדיקת גבולות האולם ====================
         const MAX_ROWS = 10;
         const MAX_COLUMNS = 12;
 
@@ -41,7 +41,7 @@ exports.bookTicket = async (req, res) => {
             return res.status(400).json({ error: 'הכיסא שנבחר כבר תפוס במופע זה!' });
         }
 
-        // ב. שליפת פרטי המופע כדי לדעת מה המחיר
+        // ב. שליפת פרטי המופע כדי לדעת מה המחיר ושם המופע
         const event = await Event.findById(eventId);
         if (!event) {
             return res.status(404).json({ error: 'המופע לא נמצא במערכת' });
@@ -62,10 +62,12 @@ exports.bookTicket = async (req, res) => {
             });
         }
 
-        // ה. ביצוע התשלום: הורדת מחיר הכרטיס מארנק המשתמש
-        await User.findByIdAndUpdate(userId, {
-            $inc: { walletBalance: -event.price } // מינוס כדי להחסיר מהארנק
-        });
+        // ה. ביצוע התשלום: הורדת מחיר הכרטיס מארנק המשתמש ומשיכת האובייקט המעודכן
+        const updatedUser = await User.findByIdAndUpdate(
+            userId, 
+            { $inc: { walletBalance: -event.price } }, // מינוס כדי להחסיר מהארנק
+            { new: true } // מחזיר את המשתמש המעודכן עם היתרה החדשה
+        );
 
         // ו. יצירת הכרטיס ושמירתו במטריצה
         const newTicket = new Ticket({
@@ -77,10 +79,21 @@ exports.bookTicket = async (req, res) => {
         });
         await newTicket.save();
 
+        // ====== הוספה: יצירת תנועה בהיסטוריית הארנק (עו"ש) ======
+        const Transaction = require('../models/transactionModel'); // ייבוא מקומי או גלובלי בראש הקובץ
+        const ticketTransaction = new Transaction({
+            userId: userId,
+            type: 'purchase',
+            amount: event.price,
+            description: `רכישת כרטיס למופע: ${event.title} (שורה ${row}, כיסא ${column})`
+        });
+        await ticketTransaction.save();
+        // ========================================================
+
         res.status(201).json({ 
             message: 'הרכישה בוצעה בהצלחה! הכסף ירד מהארנק הדיגיטלי.', 
             ticket: newTicket,
-            newWalletBalance: user.walletBalance - event.price
+            newWalletBalance: updatedUser.walletBalance // החזרת היתרה האמיתית והמדויקת מהדאטאבייס
         });
 
     } catch (err) {

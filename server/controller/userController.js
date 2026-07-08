@@ -1,4 +1,5 @@
 const User = require('../models/userModel');
+const Transaction=require('../models/transactionModel');
 const jwt = require('jsonwebtoken'); 
 const bcrypt = require('bcrypt'); // ספריית ההצפנה שמתואמת גם להרשמה וגם להתחברות
 
@@ -88,7 +89,7 @@ exports.getUserProfile = async (req, res) => {
         res.status(500).json({ error: 'שגיאה בשליפת פרטי המשתמש', details: err.message });
     }
 };
-// 4. פונקציה להטענת הארנק הדיגיטלי במונגו
+// 4. פונקציה להטענת הארנק הדיגיטלי במונגו + רישום פעולה בעו"ש
 exports.topupWallet = async (req, res) => {
     try { 
         const userId = req.params.id;
@@ -110,6 +111,17 @@ exports.topupWallet = async (req, res) => {
         if (!updatedUser) {
             return res.status(404).json({ error: 'משתמש לא נמצא במערכת' });
         }
+
+        // ====== הוספה: יצירת תנועה בהיסטוריית הארנק (עו"ש) ======
+        const Transaction = require('../models/transactionModel'); // ייבוא מקומי או גלובלי בראש הקובץ
+        const walletTransaction = new Transaction({
+            userId: userId,
+            type: 'deposit',
+            amount: amount,
+            description: 'טעינת ארנק דיגיטלי באשראי'
+        });
+        await walletTransaction.save();
+        // ========================================================
 
         // מחזירים תשובה שהכל הצליח עם היתרה החדשה
         res.status(200).json({ 
