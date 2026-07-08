@@ -87,7 +87,7 @@ exports.topupWallet = async (req, res) => {
 
         // מוצאים את המשתמש לפי ה-ID ומעדכנים במונגו
         // אנחנו משתמשים ב-$inc כדי להוסיף את הסכום ליתרה הקיימת (ולא לדרוס אותה)
-        const updatedUser = await userModel.findByIdAndUpdate(
+        const updatedUser = await User.findByIdAndUpdate(
             userId,
             { $inc: { walletBalance: amount } }, 
             { new: true } // מחזיר לנו את הדוקומנט המעודכן מהדאטאבייס
