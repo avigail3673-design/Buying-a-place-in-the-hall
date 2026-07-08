@@ -1,68 +1,82 @@
 const User = require('../models/userModel');
-const jwt = require('jsonwebtoken'); // 1. הוספנו את ייבוא ספריית ה-JWT בראש הקובץ
+const jwt = require('jsonwebtoken'); 
+const bcrypt = require('bcrypt'); // ספריית ההצפנה שמתואמת גם להרשמה וגם להתחברות
 
-// 1. הרשמת משתמש חדש (Sign Up)
+// 1. הרשמת משתמש חדש (Sign Up) - כולל הצפנת סיסמה!
 exports.registerUser = async (req, res) => {
     try {
         const { fullName, email, phone, password } = req.body;
 
-        // בדיקה קטנה אם המשתמש כבר קיים במערכת עם האימייל הזה
+        // בדיקה אם המשתמש כבר קיים במערכת
         const userExists = await User.findOne({ email });
         if (userExists) {
             return res.status(400).json({ error: 'משתמש עם כתובת אימייל זו כבר קיים במערכת' });
         }
 
-        // יצירת המשתמש - שדה walletBalance יקבל אוטומטית 0 לפי הדיפולט שהגדרנו בסכמה
-        const newUser = new User({ fullName, email, phone, password });
+        // --- התיקון: מצפינים את הסיסמה לפני ששומרים אותה במונגו ---
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        // יוצרים את המשתמש עם הסיסמה המוצפנת
+        const newUser = new User({ 
+            fullName, 
+            email, 
+            phone, 
+            password: hashedPassword // שומרים את ה-Hash המוצפן
+        });
+        
         await newUser.save();
 
         res.status(201).json({ message: 'המשתמש נרשם בהצלחה!', user: newUser });
     } catch (err) {
-       console.log("זה מה שהציק למונגוס בהרשמה:", err.message);
-        res.status(400).json({ error: 'שגיאה ברישום המשתמש', details: err.message });
+       console.log("שגיאה בהרשמה:", err.message);
+       res.status(400).json({ error: 'שגיאה ברישום המשתמש', details: err.message });
     }
 };
 
-// 2. התחברות משתמש קיים (Login) - למקרה שצריך לתקן גם פה את הסיסמה
+// 2. התחברות משתמש קיים (Login)
 exports.loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        // מוצאים את המשתמש לפי המייל
+        // א. מחפשים את המשתמש לפי האימייל
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(401).json({ error: 'אימייל או סיסמה שגויים' });
+            return res.status(401).json({ success: false, error: "אימייל או סיסמה שגויים" });
         }
 
-        // בדיקה שהסיסמה שהוקשה תואמת למה ששמור בבסיס הנתונים
-        if (user.password !== password) {
-            return res.status(401).json({ error: 'אימייל או סיסמה שגויים' });
+        // ב. בודקים סיסמה - כעת שניהם משתמשים ב-bcrypt וזה יעבוד פיקס!
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(401).json({ success: false, error: "אימייל או סיסמה שגויים" });
         }
 
-        // יצירת טוקן JWT קטן (ודאי שיש לך משתנה סביבה JWT_SECRET, או החליפי למחרוזת קבועה זמנית)
+        // ג. יצירת הטוקן (כולל ה-role בפנים)
         const token = jwt.sign(
             { id: user._id, role: user.role }, 
-            process.env.JWT_SECRET || 'super_secret_key', 
-            { expiresIn: '1d' }
+            process.env.SECRET, 
+            { expiresIn: "3h" }
         );
 
+        // ד. החזרת תשובה תקינה לדפדפן
         res.status(200).json({
-            message: 'התחברות הצליחה!',
-            token,
+            success: true,
+            token: token,
             user: {
-                _id: user._id,
+                _id: user._id, 
                 fullName: user.fullName,
                 email: user.email,
-                role: user.role || 'customer'
+                role: user.role 
             }
         });
+
     } catch (err) {
-        console.log("שגיאה בהתחברות:", err.message);
-        res.status(500).json({ error: 'שגיאה פנימית בשרת' });
+        console.log(err);
+        res.status(500).json({ success: false, error: "שגיאת שרת בתהליך ההתחברות" });
     }
 };
 
-// 3. שליפת פרטי משתמש ספציפי (כולל יתרת הארנק שלו)
+// 3. שליפת פרטי משתמש ספציפי
 exports.getUserProfile = async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
