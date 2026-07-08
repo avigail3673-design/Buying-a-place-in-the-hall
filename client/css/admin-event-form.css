@@ -1,9 +1,9 @@
-        :root {
-            --primary-blue: #0f172a;
-            --accent-blue: #2563eb;
+:root {
+            --primary-blue: #0f172a; /* כחול עמוק מאוד */
+            --accent-blue: #2563eb;  /* כחול מותג */
             --bg-light: #f8fafc;
             --text-dark: #1e293b;
-            --border-color: #e2e8f0;
+            --border-color: #cbd5e1;
         }
 
         body {
@@ -12,31 +12,37 @@
             color: var(--text-dark);
             margin: 0;
             padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
-        /* סרגל עליון */
+        /* סרגל עליון מהודק */
         .navbar {
             background-color: var(--primary-blue);
             color: white;
-            padding: 15px 30px;
+            padding: 12px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
         .navbar h1 {
             margin: 0;
-            font-size: 20px;
+            font-size: 18px;
+            font-weight: 600;
         }
 
         .back-btn {
             background-color: transparent;
             color: white;
             text-decoration: none;
-            border: 1px solid white;
-            padding: 8px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            padding: 6px 14px;
             border-radius: 6px;
-            transition: all 0.3s;
+            font-size: 14px;
+            transition: all 0.2s;
         }
 
         .back-btn:hover {
@@ -44,48 +50,62 @@
             color: var(--primary-blue);
         }
 
-        /* מיכל הטופס */
+        /* מיכל טופס ממוקד ומהודק - מונע מריחה */
+        .page-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 20px;
+        }
+
         .form-container {
-            max-width: 600px;
-            margin: 5px auto;
-            padding: 30px;
+            width: 100%;
+            max-width: 520px; /* רוחב מושלם לטופס שלא יימרח */
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+            border: 1px solid #e2e8f0;
+            padding: 24px;
+            box-sizing: border-box;
         }
 
         .form-header {
-            margin-bottom: 25px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 15px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 12px;
         }
 
         .form-header h2 {
             margin: 0;
+            font-size: 20px;
             color: var(--primary-blue);
         }
 
-        /* קבוצות קלט */
+        /* קבוצות קלט מסודרות */
         .input-group {
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .input-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-weight: 600;
+            font-size: 14px;
             color: #475569;
         }
 
-        .input-group input, .input-group textarea, .input-group select {
+        .input-group input, .input-group textarea {
             width: 100%;
             padding: 10px 12px;
             border: 1px solid var(--border-color);
             border-radius: 6px;
-            font-size: 16px;
+            font-size: 15px;
             box-sizing: border-box;
             font-family: inherit;
+            color: var(--text-dark);
+            background-color: #fff;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         .input-group input:focus, .input-group textarea:focus {
@@ -94,27 +114,33 @@
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
 
+        /* שורות כפולות מהודקות */
         .row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            gap: 16px;
         }
 
-        /* כפתור שליחה */
+        textarea {
+            resize: none; /* מונע מהמשתמש למתוח ולחרב את העיצוב */
+        }
+
+        /* כפתור שליחה מעוצב בקו נקי */
         .submit-btn {
             background-color: var(--accent-blue);
             color: white;
             border: none;
             width: 100%;
             padding: 12px;
-            border-radius: 8px;
-            font-size: 16px;
+            border-radius: 6px;
+            font-size: 15px;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+            margin-top: 8px;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.15);
             transition: opacity 0.2s;
         }
 
         .submit-btn:hover {
-            opacity: 0.9;
+            opacity: 0.95;
         }

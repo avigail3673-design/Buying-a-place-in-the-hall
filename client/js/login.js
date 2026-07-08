@@ -34,7 +34,7 @@ if (loginForm) {
                 alert(`ברוך הבא, ${data.user.fullName}!`);
                 
                 // העברה לעמוד הבא
-                window.location.href = 'admin-dashboard.html'; 
+                window.location.href = 'events.html'; 
             } else {
                 alert(data.error || 'שגיאה בהתחברות');
             }

@@ -7,13 +7,12 @@
 <link rel="stylesheet" href="../css/admin-event-form.css">
 </head>
 <body>
-
-    <div class="navbar">
+<div class="navbar">
         <h1 id="page-title">יצירת אירוע חדש</h1>
         <a href="admin-dashboard.html" class="back-btn">חזרה ללוח הבקרה</a>
     </div>
 
-    <div style="padding: 40px 20px;">
+    <div class="page-wrapper">
         <div class="form-container">
             <div class="form-header">
                 <h2 id="form-title">פרטי האירוע</h2>
@@ -21,8 +20,13 @@
 
             <form id="event-form">
                 <div class="input-group">
-                    <label for="title">שם האירוע</label>
-                    <input type="text" id="title" placeholder="לדוגמה: הופעה חיה, כנס הייטק..." required>
+                    <label for="title">שם האירוע / המופע</label>
+                    <input type="text" id="title" placeholder="לדוגמה: ערב סטנדאפ, כנס קיץ..." required>
+                </div>
+
+                <div class="input-group">
+                    <label for="artist">שם האמן / המרצה</label>
+                    <input type="text" id="artist" placeholder="לדוגמה: חנן בן ארי, מרצה אורח..." required>
                 </div>
 
                 <div class="row">
@@ -48,15 +52,19 @@
                 </div>
 
                 <div class="input-group">
-                    <label for="description">תיאור האירוע (אופציונלי)</label>
-                    <textarea id="description" rows="4" placeholder="ספרו קצת על האירוע..."></textarea>
+                    <label for="image">קישור לתמונת פוסטר (URL)</label>
+                    <input type="url" id="image" placeholder="הדביקו קישור לתמונה מאינטרנט (http://...)">
+                </div>
+
+                <div class="input-group">
+                    <label for="description">תיאור האירוע</label>
+                    <textarea id="description" rows="3" placeholder="ספרו קצת על המופע..."></textarea>
                 </div>
 
                 <button type="submit" class="submit-btn" id="save-btn">פתחת אירוע חדש</button>
             </form>
         </div>
     </div>
-
     <script src="../js/admin-event-form.js"></script>
 </body>
 </html>
