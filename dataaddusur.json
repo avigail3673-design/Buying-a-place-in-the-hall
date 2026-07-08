@@ -1,0 +1,26 @@
+[
+  {
+    "fullName": "אביגיל מנהלת האולם",
+    "email": "admin@hall.com",
+    "phone": "050-1111111",
+    "password": "$2b$10$X7z5vR0bWkS8vE9z3qY7uO2mN4lK5jH6gF7dQ8p9o0i1u2y3t4r5e",
+    "role": "admin",
+    "walletBalance": 0
+  },
+  {
+    "fullName": "משה כהן",
+    "email": "moshe@gmail.com",
+    "phone": "052-2222222",
+    "password": "$2b$10$X7z5vR0bWkS8vE9z3qY7uO2mN4lK5jH6gF7dQ8p9o0i1u2y3t4r5e",
+    "role": "customer",
+    "walletBalance": 500
+  },
+  {
+    "fullName": "רחל לוי",
+    "email": "rachel@gmail.com",
+    "phone": "054-3333333",
+    "password": "$2b$10$X7z5vR0bWkS8vE9z3qY7uO2mN4lK5jH6gF7dQ8p9o0i1u2y3t4r5e",
+    "role": "customer",
+    "walletBalance": 150
+  }
+]

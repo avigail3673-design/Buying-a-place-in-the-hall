@@ -21,7 +21,7 @@ async function displayUserStatus() {
 
     try {
         // פנייה לנתיב שכתבתן בשרת: GET /users/:id
-        const response = await fetch(`${API_URL}/users/${userId}`);
+        const response = await fetch(`${API_URL}/${userId}`);
         if (response.ok) {
             const userData = await response.json();
             userStatusDiv.innerHTML = `שלום, <strong>${userData.fullName}</strong> | יתרה בארנק: <strong>₪${userData.walletBalance}</strong>`;
@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // 🔥 הכל תקין! שולחים את הבקשה ל-PUT Route שיצרנו קודם בשרת
             try {
-                const response = await fetch(`${API_URL}/users/${userId}/topup`, {
+                const response = await fetch(`${API_URL}/${userId}/topup`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -228,7 +228,7 @@ async function updateWalletSidebar() {
     }
 
     try {
-        const response = await fetch(`${API_URL}/users/${userId}`);
+        const response = await fetch(`${API_URL}/${userId}`);
         if (response.ok) {
             const userData = await response.json();
             if (walletStatusElement) {

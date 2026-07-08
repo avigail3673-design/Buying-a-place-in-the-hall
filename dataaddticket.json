@@ -1,0 +1,26 @@
+[
+  {
+    "eventId": "668ba1f2c3b4a5d6e7f80001",
+    "userId": "668ba1f2c3b4a5d6e7f80002",
+    "seatNumber": "Row 5, Seat 12",
+    "pricePaid": 180,
+    "purchaseDate": "2026-07-08T14:22:00.000Z",
+    "status": "valid"
+  },
+  {
+    "eventId": "668ba1f2c3b4a5d6e7f80001",
+    "userId": "668ba1f2c3b4a5d6e7f80002",
+    "seatNumber": "Row 5, Seat 13",
+    "pricePaid": 180,
+    "purchaseDate": "2026-07-08T14:22:00.000Z",
+    "status": "valid"
+  },
+  {
+    "eventId": "668ba1f2c3b4a5d6e7f80003",
+    "userId": "668ba1f2c3b4a5d6e7f80004",
+    "seatNumber": "Row 1, Seat 5",
+    "pricePaid": 220,
+    "purchaseDate": "2026-07-08T15:45:00.000Z",
+    "status": "valid"
+  }
+]
