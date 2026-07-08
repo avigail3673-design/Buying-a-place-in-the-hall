@@ -90,7 +90,7 @@ exports.getUserProfile = async (req, res) => {
 };
 // 4. פונקציה להטענת הארנק הדיגיטלי במונגו
 exports.topupWallet = async (req, res) => {
-    try {
+    try { 
         const userId = req.params.id;
         const { amount } = req.body;
 

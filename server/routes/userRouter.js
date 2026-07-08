@@ -1,19 +1,29 @@
+// server/routes/userRouter.js
 const express = require('express');
 const router = express.Router();
 
 const userController = require('../controller/userController');
-const { checkAuth } = require('../middleware/checkA.js'); // מייבאים את checkAuth
+const { checkAuth } = require('../middleware/checkA.js'); // מייבאים את checkAuth באהבה
 
-// נתיב להרשמה: POST /users/signup (פתוח לכולם)
-router.post('/users/signup', userController.registerUser);
+// ==========================================
+// נתיבים ציבוריים (פתוחים לכולם)
+// ==========================================
 
-// נתיב להתחברות: POST /users/login (פתוח לכולם)
-router.post('/users/login', userController.loginUser);
+// נתיב להרשמה בפועל: POST /users/signup
+router.post('users/signup', userController.registerUser);
 
-// נתיב לקבלת פרופיל (ויתרת ארנק): מוגן! רק משתמש מחובר יכול לראות פרופיל
-router.get('/users/:id', checkAuth, userController.getUserProfile);
+// נתיב להתחברות בפועל: POST /users/login
+router.post('users/login', userController.loginUser);
+
+
+// ==========================================
+// נתיבים מוגנים (דורשים טוקן בתוקף - checkAuth)
+// ==========================================
+
+// נתיב לקבלת פרופיל ויתרת ארנק: GET /users/:id
+router.get('users/:id', checkAuth, userController.getUserProfile);
 
 // נתיב לעדכון והטענת הארנק הדיגיטלי: PUT /users/:id/topup
-router.put('/users/:id/topup', userController.topupWallet);
+router.put('users/:id/topup', checkAuth, userController.topupWallet);
 
 module.exports = router;
