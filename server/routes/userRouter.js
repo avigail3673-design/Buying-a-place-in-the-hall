@@ -10,10 +10,10 @@ const { checkAuth } = require('../middleware/checkA.js'); // מייבאים את
 // ==========================================
 
 // נתיב להרשמה בפועל: POST /users/signup
-router.post('users/signup', userController.registerUser);
+router.post('/users/signup', userController.registerUser);
 
 // נתיב להתחברות בפועל: POST /users/login
-router.post('users/login', userController.loginUser);
+router.post('/users/login', userController.loginUser);
 
 
 // ==========================================
@@ -21,9 +21,9 @@ router.post('users/login', userController.loginUser);
 // ==========================================
 
 // נתיב לקבלת פרופיל ויתרת ארנק: GET /users/:id
-router.get('users/:id', checkAuth, userController.getUserProfile);
+router.get('/users/:id', checkAuth, userController.getUserProfile);
 
 // נתיב לעדכון והטענת הארנק הדיגיטלי: PUT /users/:id/topup
-router.put('users/:id/topup', checkAuth, userController.topupWallet);
+router.put('/users/:id/topup', checkAuth, userController.topupWallet);
 
 module.exports = router;
