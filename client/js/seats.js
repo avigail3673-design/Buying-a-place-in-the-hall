@@ -22,7 +22,12 @@ async function loadUserStatus() {
     }
 
     try {
-        const response = await fetch(`${API_URL}/users/${userId}`);
+        const response = await fetch(`${API_URL}/users/${userId}`, {
+           method: 'GET',
+           headers: {
+               'Authorization': `Bearer ${localStorage.getItem('token')}`
+           }
+       });
         if (response.ok) {
             const userData = await response.json();
             userWalletBalance = userData.walletBalance;
@@ -207,11 +212,14 @@ document.getElementById('checkout-button').addEventListener('click', async () =>
             body: JSON.stringify({ seats: seatIdsToBuy })
         });
 
-        // 2. חיוב הארנק של המשתמש בשרת
-        const userRes = await fetch(`${API_URL}/users/${userId}/wallet`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ amount: -totalPrice }) // שולח מינוס כדי להוריד מהיתרה
+        // 2. חיוב הארנק של המשתמש בשרת דרך נתיב ה-topup הקיים!
+        const userRes = await fetch(`${API_URL}/users/${userId}/topup`, {
+          method: 'PUT',
+          headers: { 
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('token')}` // חובה בשביל ה-checkAuth בשרת
+          },
+          body: JSON.stringify({ amount: -totalPrice }) // שולח מינוס כדי להוריד מהיתרה
         });
 
         if (eventRes.ok && userRes.ok) {

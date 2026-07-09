@@ -89,48 +89,56 @@ exports.getUserProfile = async (req, res) => {
         res.status(500).json({ error: 'שגיאה בשליפת פרטי המשתמש', details: err.message });
     }
 };
-// 4. פונקציה להטענת הארנק הדיגיטלי במונגו + רישום פעולה בעו"ש
+
+// 4. פונקציה להטענת הארנק הדיגיטלי / חיוב רכישה + רישום פעולה בעו"ש
 exports.topupWallet = async (req, res) => {
     try { 
         const userId = req.params.id;
         const { amount } = req.body;
 
-        // בדיקת בטיחות: שהסכום הגיוני ותואם לחוקים שרצית
-        if (!amount || amount < 100 || amount > 100000) {
+        if (!amount) {
+            return res.status(400).json({ error: 'לא התקבל סכום לפעולה.' });
+        }
+
+        // 🔥 התיקון החכם: בודקים אם מדובר בהפקדה או קנייה
+        const isDeposit = amount > 0;
+
+        // אם זו הפקדה (טעינת ארנק) - בודקים את גבולות ה-100 עד 100,000 ש"ח
+        if (isDeposit && (amount < 100 || amount > 100000)) {
             return res.status(400).json({ error: 'סכום הטענה לא תקין. יש להזין בין 100 ל-100,000 ש"ח.' });
         }
 
-        // מוצאים את המשתמש לפי ה-ID ומעדכנים במונגו
-        // אנחנו משתמשים ב-$inc כדי להוסיף את הסכום ליתרה הקיימת (ולא לדרוס אותה)
+        // מוצאים את המשתמש לפי ה-ID ומעדכנים במונגו (עובד מעולה גם עם חיובי וגם עם שלילי!)
         const updatedUser = await User.findByIdAndUpdate(
             userId,
             { $inc: { walletBalance: amount } }, 
-            { new: true } // מחזיר לנו את הדוקומנט המעודכן מהדאטאבייס
+            { new: true } 
         );
 
         if (!updatedUser) {
             return res.status(404).json({ error: 'משתמש לא נמצא במערכת' });
         }
 
-        // ====== הוספה: יצירת תנועה בהיסטוריית הארנק (עו"ש) ======
-        const Transaction = require('../models/transactionModel'); // ייבוא מקומי או גלובלי בראש הקובץ
-        const walletTransaction = new Transaction({
+        // ====== חיבור אוטומטי לעו"ש של חברה שלך (נקי מכפילויות) ======
+        const newTx = new Transaction({
             userId: userId,
-            type: 'deposit',
-            amount: amount,
-            description: 'טעינת ארנק דיגיטלי באשראי'
+            // אם זו קנייה (שלילי), נהפוך לחיובי (למשל 150) בשביל ה-summary והחישובים שלכן
+            amount: isDeposit ? amount : Math.abs(amount), 
+            type: isDeposit ? 'deposit' : 'purchase', // הערכים המדויקים שחברה שלך בודקת!
+            description: isDeposit ? 'טעינת ארנק דיגיטלי באשראי' : 'רכישת כרטיסים למופע',
+            createdAt: new Date()
         });
-        await walletTransaction.save();
-        // ========================================================
 
-        // מחזירים תשובה שהכל הצליח עם היתרה החדשה
+        await newTx.save(); // שומרים את שורת העו"ש בבסיס הנתונים!
+
+        // מחזירים תשובה שהכל הצליח עם היתרה החדשה (חובה לקרוא לזה walletBalance בשביל ה-Frontend שלכן!)
         res.status(200).json({ 
-            message: 'הארנק הוטען בהצלחה!', 
-            newBalance: updatedUser.walletBalance 
+            message: isDeposit ? 'הארנק הוטען בהצלחה!' : 'הרכישה בוצעה בהצלחה!', 
+            walletBalance: updatedUser.walletBalance 
         });
 
     } catch (err) {
-        console.error('שגיאה בשרת בעת הטענת ארנק:', err);
-        res.status(500).json({ error: 'שגיאה פנימית בשרת בעת הטענת הארנק' });
+        console.error('שגיאה בשרת בעת עדכון ארנק ועו"ש:', err);
+        res.status(500).json({ error: 'שגיאה פנימית בשרת בעת עדכון הארנק' });
     }
 };
