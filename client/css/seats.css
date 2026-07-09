@@ -191,30 +191,52 @@ body {
 }
 
 /* מצבי כיסא: זמין, תפוס, נבחר */
+/* מצבי כיסא: זמין, תפוס, נבחר (צבעים זוהרים חדשים!) */
+.seat.available {
+    background: #323244;
+    border-color: #4e4e6d;
+}
+.seat.available .seat-cushion { 
+    background: #42425a; 
+}
+
+/* מעבר עכבר - סגול זורח */
 .seat.available:hover {
-    background: #448aff;
-    border-color: #448aff;
-    box-shadow: 0 0 10px rgba(68, 138, 255, 0.8);
+    background: #7c4dff;
+    border-color: #9666ff;
+    box-shadow: 0 0 15px rgba(124, 77, 255, 0.9);
 }
-.seat.available:hover .seat-cushion { background: #64a1ff; }
+.seat.available:hover .seat-cushion { 
+    background: #9666ff; 
+}
 
+/* נבחר - כחול ניאון */
 .seat.selected {
-    background: #ff2a5f !important; /* אדום זוהר לנבחר */
-    border-color: #ff2a5f !important;
-    box-shadow: 0 0 15px rgba(255, 42, 95, 0.8) !important;
+    background: #448aff !important; 
+    border-color: #64a1ff !important;
+    box-shadow: 0 0 18px rgba(68, 138, 255, 0.9) !important;
 }
-.seat.selected .seat-cushion { background: #ff6087 !important; }
-.seat.selected::before, .seat.selected::after { background: #b3163d; }
+.seat.selected .seat-cushion { 
+    background: #64a1ff !important; 
+}
+.seat.selected::before, .seat.selected::after { 
+    background: #1a65db; 
+}
 
+/* תפוס - אדום ניאון חסום */
 .seat.occupied {
-    background: #11111a !important; /* תפוס חשוך ומת */
-    border-color: #222 !important;
+    background: #ff2a5f !important; 
+    border-color: #ff2a5f !important;
+    box-shadow: 0 0 12px rgba(255, 42, 95, 0.7) !important;
     cursor: not-allowed;
-    opacity: 0.4;
+    opacity: 0.9;
 }
-.seat.occupied .seat-cushion { background: #1a1a26; }
-.seat.occupied::before, .seat.occupied::after { background: #1a1a26; }
-
+.seat.occupied .seat-cushion { 
+    background: #ff6087; 
+}
+.seat.occupied::before, .seat.occupied::after { 
+    background: #b3163d; 
+}
 /* תפריט סיכום וקנייה */
 .booking-footer {
     margin-top: 50px;
@@ -245,10 +267,10 @@ body {
     height: 18px;
     border-radius: 4px;
 }
-.seat-sample.available { background: #1e1e30; border: 1px solid #2e2e4a; }
-.seat-sample.selected { background: #ff2a5f; box-shadow: 0 0 8px #ff2a5f; }
-.seat-sample.occupied { background: #11111a; opacity: 0.4; }
-
+/* עדכון מקרא הצבעים למטה בהתאמה */
+.seat-sample.available { background: #323244; border: 1px solid #4e4e6d; }
+.seat-sample.selected { background: #448aff; box-shadow: 0 0 8px #448aff; }
+.seat-sample.occupied { background: #ff2a5f; box-shadow: 0 0 8px #ff2a5f; }
 .checkout-panel {
     display: flex;
     align-items: center;

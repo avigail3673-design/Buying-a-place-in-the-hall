@@ -72,6 +72,7 @@ async function loadEventDetailsAndSeats() {
         console.error('שגיאה במשיכת נתוני מופע ומושבים מהשרת:', err);
     }
 }
+
 // 3. רינדור האולם על בסיס המושבים התפוסים ב-DB
 function generateHallGrid() {
     const gridContainer = document.getElementById('seating-grid');
@@ -96,13 +97,13 @@ function generateHallGrid() {
             
             const seat = document.createElement('div');
             seat.className = 'seat';
-            seat.id = seatId; // ✨ הוספת מזהה ייחודי לאלמנט כדי לאפשר בדיקת שכנים
+            seat.id = seatId; // הוספת מזהה ייחודי לאלמנט
             
             const cushion = document.createElement('div');
             cushion.className = 'seat-cushion';
             seat.appendChild(cushion);
 
-            // ⚡ התיקון הממוקד: בודק התאמה גם לפי אות ("A-1") וגם לפי מספר שורה ("1-1") או אובייקט מה-DB שלכן
+            // בודק התאמה גם לפי אות וגם לפי מספר שורה
             const isOccupied = occupiedSeats.some(os => {
                 if (typeof os === 'string') {
                     return os === seatId || os === `${rowNumber}-${seatNum}`;
@@ -113,15 +114,10 @@ function generateHallGrid() {
             });
 
             if (isOccupied) {
-                seat.classList.add('occupied'); // הופך לתפוס (אדום זוהר)
+                seat.classList.add('occupied'); // הופך לתפוס
             } else {
-                seat.classList.add('available'); // נשאר פנוי (אפור)
-                seat.addEventListener('click', () => handleSeatClick(seat, seatId, rowLetter, seatNum));
-            if (occupiedSeats.includes(seatId)) {
-                seat.classList.add('occupied');
-            } else {
-                seat.classList.add('available');
-                seat.addEventListener('click', () => handleSeatClick(seat, seatId, i + 1, seatNum));
+                seat.classList.add('available'); // נשאר פנוי
+                seat.addEventListener('click', () => handleSeatClick(seat, seatId, rowNumber, seatNum));
             }
 
             rowElement.appendChild(seat);
@@ -130,6 +126,7 @@ function generateHallGrid() {
         gridContainer.appendChild(rowElement);
     }
 }
+
 // 4. ניהול לחיצות ובדיקת חוקים
 function handleSeatClick(seatElement, seatId, rowNumber, seatNum) {
     if (seatElement.classList.contains('selected')) {
@@ -142,8 +139,14 @@ function handleSeatClick(seatElement, seatId, rowNumber, seatNum) {
         }
 
         seatElement.classList.add('selected');
-        // שומרים גם את המספר הסידורי של השורה (1 עד 6) עבור השרת
-        selectedSeats.push({ id: seatId, row: rowNumber, rowLetter: seatId.split('-')[0], num: seatNum, element: seatElement });
+        // שומרים את הנתונים הרלוונטיים עבור השרת והתצוגה
+        selectedSeats.push({ 
+            id: seatId, 
+            row: rowNumber, 
+            rowLetter: seatId.split('-')[0], 
+            num: seatNum, 
+            element: seatElement 
+        });
     }
 
     updateCheckoutSummary();
@@ -166,7 +169,7 @@ function updateCheckoutSummary() {
     checkoutBtn.disabled = false;
 }
 
-// 5. ✨ עדכון קריטי: רכישה מול הקונטרולר המרכזי ששולח את המייל
+// 5. רכישה ועדכון מול השרת
 document.getElementById('checkout-button').addEventListener('click', async () => {
     const userId = localStorage.getItem('userId');
     const eventId = localStorage.getItem('currentEventId');
@@ -196,42 +199,11 @@ document.getElementById('checkout-button').addEventListener('click', async () =>
         }
     }
 
-    // שליחת כל כיסא שנבחר בנפרד לקונטרולר המאובטח שמנפק את המייל
+    // שליחת בקשה לשרת עבור כל כיסא שנבחר
     try {
         let successCount = 0;
         let lastWalletBalance = userWalletBalance;
 
-        // 1. עדכון המושבים התפוסים של המופע בשרת
-        const eventRes = await fetch(`${API_URL}/events/${eventId}/book`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ seats: seatIdsToBuy })
-        });
-
-        // 2. חיוב הארנק של המשתמש בשרת דרך נתיב ה-topup הקיים!
-        const userRes = await fetch(`${API_URL}/users/${userId}/topup`, {
-          method: 'PUT',
-          headers: { 
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${localStorage.getItem('token')}` // חובה בשביל ה-checkAuth בשרת
-          },
-          body: JSON.stringify({ amount: -totalPrice }) // שולח מינוס כדי להוריד מהיתרה
-      });
-
-        if (eventRes.ok && userRes.ok) {
-            // 🎉 הרכישה הצליחה בבסיס הנתונים! כעת ננפיק קודי כניסה ייחודיים בלייב
-            let ticketReceipt = `🎉 הרכישה בוצעה בהצלחה!\n\nהונפקו עבורך קודי כניסה דיגיטליים לאולם:\n`;
-            
-            selectedSeats.forEach(seat => {
-                // ייצור קוד רנדומלי מאובטח עבור כל כרטיס (למשל: TKT-A2-9F8A)
-                const randomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
-                const ticketCode = `TKT-${seat.id}-${randomCode}`;
-                
-                ticketReceipt += `📍 שורה וכיסא: ${seat.id} 👈 קוד כניסה: ${ticketCode}\n`;
-                
-                // שינוי המצב במסך לתפוס קבוע
-                seat.element.classList.remove('selected');
-                seat.element.classList.add('occupied');
         for (let seat of selectedSeats) {
             const response = await fetch(`${API_URL}/tickets/book`, {
                 method: 'POST',
