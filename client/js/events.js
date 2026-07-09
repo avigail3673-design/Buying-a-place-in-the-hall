@@ -98,8 +98,6 @@ function goToSeatSelection(eventId) {
     localStorage.setItem('currentEventId', eventId);
     window.location.href = 'seats.html'; // מעביר לעמוד הבא
 }
-
-
 // ========================================================
 // 💳 לוגיקת ארנק דיגיטלי וחלון קופץ (Popup Modal)
 // ========================================================
@@ -183,9 +181,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // 🔥 הכל תקין! שולחים את הבקשה ל-PUT Route שיצרנו קודם בשרת
+            // 🔥 הכל תקין! שולחים את הבקשה ל-PUT Route המעודכן עם /users/
             try {
-                const response = await fetch(`${API_URL}/${userId}/topup`, {
+                const response = await fetch(`${API_URL}/users/${userId}/topup`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -215,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// פונקציה ייעודית למשיכת הנתון המעודכן ממונגו והצגתו בריבוע הצידי
+// פונקציה ייעודית למשיכת הנתון המעודכן ממונגו והצגתו בריבוע הצידי - עודכן עם /users/
 async function updateWalletSidebar() {
     const userId = localStorage.getItem('userId');
     const walletStatusElement = document.getElementById('user-wallet-status');
@@ -228,7 +226,7 @@ async function updateWalletSidebar() {
     }
 
     try {
-        const response = await fetch(`${API_URL}/${userId}`);
+        const response = await fetch(`${API_URL}/users/${userId}`);
         if (response.ok) {
             const userData = await response.json();
             if (walletStatusElement) {
