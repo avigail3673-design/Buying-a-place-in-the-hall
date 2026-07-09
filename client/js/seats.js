@@ -71,7 +71,11 @@ async function loadEventDetailsAndSeats() {
     }
 }
 
+<<<<<<< HEAD
 // 3. רינדור האולם על בסיס המושבים התפוסים ב-DB (משולב עם הבדיקה החכמה)
+=======
+// 3. רינדור האולם על בסיס המושבים התפוסים ב-DB
+>>>>>>> aebd63623f0ba350ff38c26f0a6e27a9e9a86578
 function generateHallGrid() {
     const gridContainer = document.getElementById('seating-grid');
     gridContainer.innerHTML = ''; 
@@ -95,13 +99,21 @@ function generateHallGrid() {
             
             const seat = document.createElement('div');
             seat.className = 'seat';
+<<<<<<< HEAD
             seat.id = seatId; 
+=======
+            seat.id = seatId; // הוספת מזהה ייחודי לאלמנט
+>>>>>>> aebd63623f0ba350ff38c26f0a6e27a9e9a86578
             
             const cushion = document.createElement('div');
             cushion.className = 'seat-cushion';
             seat.appendChild(cushion);
 
+<<<<<<< HEAD
             // ✨ הבדיקה המשולבת והחכמה של חברה שלך - מונעת שגיאות סוגי נתונים מה-DB
+=======
+            // בודק התאמה גם לפי אות וגם לפי מספר שורה
+>>>>>>> aebd63623f0ba350ff38c26f0a6e27a9e9a86578
             const isOccupied = occupiedSeats.some(os => {
                 if (typeof os === 'string') {
                     return os === seatId || os === `${rowNumber}-${seatNum}`;
@@ -112,9 +124,15 @@ function generateHallGrid() {
             });
 
             if (isOccupied) {
+<<<<<<< HEAD
                 seat.classList.add('occupied'); 
             } else {
                 seat.classList.add('available'); 
+=======
+                seat.classList.add('occupied'); // הופך לתפוס
+            } else {
+                seat.classList.add('available'); // נשאר פנוי
+>>>>>>> aebd63623f0ba350ff38c26f0a6e27a9e9a86578
                 seat.addEventListener('click', () => handleSeatClick(seat, seatId, rowNumber, seatNum));
             }
 
@@ -138,6 +156,7 @@ function handleSeatClick(seatElement, seatId, rowNumber, seatNum) {
 
         seatElement.classList.add('selected');
         // שומרים את האות ואת המספר הסידורי של השורה עבור השרת והלוגיקה
+        // שומרים את הנתונים הרלוונטיים עבור השרת והתצוגה
         selectedSeats.push({ 
             id: seatId, 
             row: rowNumber, 
@@ -168,6 +187,7 @@ function updateCheckoutSummary() {
 }
 
 // 5. רכישה מול הקונטרולר המרכזי שמנפק מיילים ומעדכן עו"ש בפעולה אחת
+// 5. רכישה ועדכון מול השרת
 document.getElementById('checkout-button').addEventListener('click', async () => {
     const userId = localStorage.getItem('userId');
     const eventId = localStorage.getItem('currentEventId');
@@ -198,6 +218,7 @@ document.getElementById('checkout-button').addEventListener('click', async () =>
     }
 
     // שליחת בקשות מסודרות לשרת
+    // שליחת בקשה לשרת עבור כל כיסא שנבחר
     try {
         let successCount = 0;
         let lastWalletBalance = userWalletBalance;
