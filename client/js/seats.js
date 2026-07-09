@@ -71,11 +71,8 @@ async function loadEventDetailsAndSeats() {
     }
 }
 
-<<<<<<< HEAD
 // 3. רינדור האולם על בסיס המושבים התפוסים ב-DB (משולב עם הבדיקה החכמה)
-=======
 // 3. רינדור האולם על בסיס המושבים התפוסים ב-DB
->>>>>>> aebd63623f0ba350ff38c26f0a6e27a9e9a86578
 function generateHallGrid() {
     const gridContainer = document.getElementById('seating-grid');
     gridContainer.innerHTML = ''; 
@@ -99,21 +96,15 @@ function generateHallGrid() {
             
             const seat = document.createElement('div');
             seat.className = 'seat';
-<<<<<<< HEAD
             seat.id = seatId; 
-=======
             seat.id = seatId; // הוספת מזהה ייחודי לאלמנט
->>>>>>> aebd63623f0ba350ff38c26f0a6e27a9e9a86578
             
             const cushion = document.createElement('div');
             cushion.className = 'seat-cushion';
             seat.appendChild(cushion);
 
-<<<<<<< HEAD
             // ✨ הבדיקה המשולבת והחכמה של חברה שלך - מונעת שגיאות סוגי נתונים מה-DB
-=======
             // בודק התאמה גם לפי אות וגם לפי מספר שורה
->>>>>>> aebd63623f0ba350ff38c26f0a6e27a9e9a86578
             const isOccupied = occupiedSeats.some(os => {
                 if (typeof os === 'string') {
                     return os === seatId || os === `${rowNumber}-${seatNum}`;
@@ -124,15 +115,9 @@ function generateHallGrid() {
             });
 
             if (isOccupied) {
-<<<<<<< HEAD
                 seat.classList.add('occupied'); 
-            } else {
-                seat.classList.add('available'); 
-=======
-                seat.classList.add('occupied'); // הופך לתפוס
-            } else {
+            }  else {
                 seat.classList.add('available'); // נשאר פנוי
->>>>>>> aebd63623f0ba350ff38c26f0a6e27a9e9a86578
                 seat.addEventListener('click', () => handleSeatClick(seat, seatId, rowNumber, seatNum));
             }
 
