@@ -88,7 +88,7 @@ exports.bookTicket = async (req, res) => {
         const ticketHtml = `
             <div style="font-family: Arial, sans-serif; max-width: 500px; border: 2px dashed #4CAF50; padding: 20px; border-radius: 10px; text-align: center; direction: rtl; margin: 0 auto;">
                 <h2 style="color: #4CAF50;">🎉 אישור רכישת כרטיס!</h2>
-                <p>שלום <strong>${user.name || 'אורח'}</strong>, שמחים לעדכן שכרטיסך למופע נשמר בהצלחה.</p>
+                <p>שלום <strong>${user.fullName || 'אורח'}</strong>, שמחים לעדכן שכרטיסך למופע נשמר בהצלחה.</p>
                 <hr style="border: 1px solid #eee;">
                 <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; text-align: right;">
                     <p><strong>מופע:</strong> ${event.title}</p>

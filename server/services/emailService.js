@@ -4,16 +4,15 @@ const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'the-project-email@gmail.com', // ⚠️ המייל שלך ממנו יישלחו ההודעות
-        pass: 'abcd efgh ijkl mnop'         // ⚠️ סיסמת האפליקציה בת 16 האותיות מגוגל
+        user: process.env.EMAIL_USER, // קורא את האימייל מקובץ ה-env
+        pass: process.env.EMAIL_PASS  // קורא את סיסמת 16 האותיות מקובץ ה-env
     }
 });
-
 // 2. פונקציה גנרית לשליחת מייל
 const sendEmail = async (to, subject, text, html) => {
     try {
         const mailOptions = {
-            from: '"פורטל האירועים" <the-project-email@gmail.com>',
+            from: `"פורטל האירועים" <${process.env.EMAIL_USER}>`,
             to: to,       // מייל היעד (הלקוח)
             subject: subject, // נושא המייל
             text: text,   // תוכן טקסט פשוט (לגיבוי)
