@@ -14,7 +14,7 @@ if (loginForm) {
         const password = document.getElementById('password').value;
         
         try {
-            const response = await fetch(`${API_URL}/login`, {
+            const response = await fetch(`${API_URL}/users/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -67,7 +67,7 @@ if (registerForm) {
         const password = document.getElementById('reg-password').value;
 
         try {
-            const response = await fetch(`${API_URL}/signup`, {
+            const response = await fetch(`${API_URL}/users/signup`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
