@@ -89,7 +89,6 @@ async function fallbackLoadEvents(eventId) {
         console.error('שגיאה קריטית בטעינת הנתונים:', err);
     }
 }
-
 // 3. רינדור האולם על בסיס המושבים התפוסים ב-DB
 function generateHallGrid() {
     const gridContainer = document.getElementById('seating-grid');
@@ -99,6 +98,8 @@ function generateHallGrid() {
 
     for (let i = 0; i < TOTAL_ROWS; i++) {
         const rowLetter = rowLetters[i];
+        const rowNumber = i + 1; // המרה מ-A,B,C למספרים 1,2,3 בשביל השרת
+        
         const rowElement = document.createElement('div');
         rowElement.className = 'seat-row';
 
@@ -119,11 +120,20 @@ function generateHallGrid() {
             cushion.className = 'seat-cushion';
             seat.appendChild(cushion);
 
-            // ⚡ המושבים נצבעים בלייב לפי מה שתפוס ב-Database!
-            if (occupiedSeats.includes(seatId)) {
-                seat.classList.add('occupied');
+            // ⚡ התיקון הממוקד: בודק התאמה גם לפי אות ("A-1") וגם לפי מספר שורה ("1-1") או אובייקט מה-DB שלכן
+            const isOccupied = occupiedSeats.some(os => {
+                if (typeof os === 'string') {
+                    return os === seatId || os === `${rowNumber}-${seatNum}`;
+                } else if (os && typeof os === 'object') {
+                    return (os.row === rowLetter || os.row === rowNumber) && (os.column === seatNum || os.num === seatNum);
+                }
+                return false;
+            });
+
+            if (isOccupied) {
+                seat.classList.add('occupied'); // הופך לתפוס (אדום זוהר)
             } else {
-                seat.classList.add('available');
+                seat.classList.add('available'); // נשאר פנוי (אפור)
                 seat.addEventListener('click', () => handleSeatClick(seat, seatId, rowLetter, seatNum));
             }
 
@@ -133,7 +143,6 @@ function generateHallGrid() {
         gridContainer.appendChild(rowElement);
     }
 }
-
 // 4. ניהול לחיצות ובדיקת חוקים
 function handleSeatClick(seatElement, seatId, rowLetter, seatNum) {
     if (seatElement.classList.contains('selected')) {
@@ -220,7 +229,7 @@ document.getElementById('checkout-button').addEventListener('click', async () =>
               'Authorization': `Bearer ${localStorage.getItem('token')}` // חובה בשביל ה-checkAuth בשרת
           },
           body: JSON.stringify({ amount: -totalPrice }) // שולח מינוס כדי להוריד מהיתרה
-        });
+      });
 
         if (eventRes.ok && userRes.ok) {
             // 🎉 הרכישה הצליחה בבסיס הנתונים! כעת ננפיק קודי כניסה ייחודיים בלייב
