@@ -32,15 +32,19 @@ async function loadEventData(id) {
         
         const event = await response.json();
 
-        // מילוי השדות בטופס אוטומטית (כולל השדות החדשים!)
+        // מילוי השדות בטופס אוטומטית
         document.getElementById('title').value = event.title;
-        document.getElementById('artist').value = event.artist || ''; // ✨ שדה חדש
+        document.getElementById('artist').value = event.artist || ''; 
         document.getElementById('location').value = event.location || 'האולם המרכזי';
         document.getElementById('price').value = event.price;
-        document.getElementById('totalSeats').value = event.totalSeats || ''; // ✨ שדה חדש
-        document.getElementById('image').value = event.image || ''; // ✨ שדה חדש
-        document.getElementById('description').value = event.description || ''; // ✨ שדה חדש
+        document.getElementById('totalSeats').value = event.totalSeats || ''; 
+        document.getElementById('description').value = event.description || ''; 
         
+        // הצגת סטטוס תמונה נוכחית אם קיימת
+        if (event.image) {
+            document.getElementById('current-image-status').textContent = '💡 קיימת כבר תמונה שמורה במערכת. בחירת קובץ חדש תחליף אותה.';
+        }
+
         // המרה של פורמט התאריך לטובת שדה datetime-local
         if (event.date) {
             const localDate = new Date(event.date).toISOString().slice(0, 16);
@@ -56,17 +60,22 @@ async function loadEventData(id) {
 document.getElementById('event-form').addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // ✨ בניית האובייקט המלא עם כל השדות החדשים לאיסוף מהטופס
-    const eventData = {
-        title: document.getElementById('title').value,
-        artist: document.getElementById('artist').value, // ✨ חדש
-        date: document.getElementById('date').value,
-        location: document.getElementById('location').value,
-        price: Number(document.getElementById('price').value),
-        totalSeats: Number(document.getElementById('totalSeats').value), // ✨ חדש
-        image: document.getElementById('image').value || undefined, // ✨ חדש - אם ריק, ישתמש בדיפולט של הסכמה
-        description: document.getElementById('description').value
-    };
+    // ✨ עדכון: שימוש ב-FormData במקום אובייקט JSON פשוט, כדי לתמוך בקבצים
+    const formData = new FormData();
+    formData.append('title', document.getElementById('title').value);
+    formData.append('artist', document.getElementById('artist').value);
+    formData.append('date', document.getElementById('date').value);
+    formData.append('location', document.getElementById('location').value);
+    formData.append('price', document.getElementById('price').value);
+    formData.append('totalSeats', document.getElementById('totalSeats').value);
+    formData.append('description', document.getElementById('description').value);
+
+    // ✨ תפיסת קובץ התמונה האמיתי שהמנהל בחר
+    const imageInput = document.getElementById('image');
+    if (imageInput.files.length > 0) {
+        // 'image' חייב להתאים בדיוק ל-upload.single('image') בראוטר של ה-Backend
+        formData.append('image', imageInput.files[0]); 
+    }
 
     try {
         let response;
@@ -77,26 +86,25 @@ document.getElementById('event-form').addEventListener('submit', async (e) => {
             response = await fetch(`${API_URL}/events/${eventId}`, {
                 method: 'PUT',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}` // שליחת טוקן האבטחה
+                    // ⚠️ חשוב: כששולחים FormData אסור לציין 'Content-Type': 'application/json'! הדפדפן מקנפג לבד.
+                    'Authorization': `Bearer ${token}` 
                 },
-                body: JSON.stringify(eventData)
+                body: formData // שולחים את ה-formData
             });
         } else {
             // מצב יצירה: נשלח בקשת POST
             response = await fetch(`${API_URL}/events`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}` // שליחת טוקן האבטחה
+                    'Authorization': `Bearer ${token}` 
                 },
-                body: JSON.stringify(eventData)
+                body: formData // שולחים את ה-formData
             });
         }
 
         if (response.ok) {
             alert(eventId ? 'האירוע עודכן בהצלחה!' : 'האירוע נוצר בהצלחה!');
-            window.location.href = 'admin-dashboard.html'; // חזרה ישירות לדאשבורד
+            window.location.href = 'admin-dashboard.html'; 
         } else {
             const errorData = await response.json();
             alert(errorData.error || 'שגיאה בשמירת האירוע');

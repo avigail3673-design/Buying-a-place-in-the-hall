@@ -1,7 +1,7 @@
 const express = require('express');
 const app=express();
 const mongoose=require('mongoose');
-
+const path = require('path');
 const env=require('dotenv')
 env.config();
 app.use(express.static('../client'));
@@ -23,7 +23,7 @@ mongoose.connect(process.env.CONECTION_STRING,conectionParams)
 const cors = require('cors');
 app.use(express.json());
 app.use(cors()); 
-
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(routerUser)
 app.use(routerEvent);
 app.use(routerTicket);

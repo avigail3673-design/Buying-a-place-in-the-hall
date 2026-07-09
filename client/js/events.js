@@ -59,7 +59,9 @@ async function fetchEvents() {
     });
 
     // בדיקה אם יש תמונה, אם אין - נשים תמונת ברירת מחדל יפה
-    const imageUrl = event.image || 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=500';
+    const imageUrl = event.image 
+    ? `${API_URL}/${event.image}` 
+    : 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=500';
 
     const card = document.createElement('div');
     card.className = 'event-card';

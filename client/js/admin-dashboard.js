@@ -23,7 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
 // 2. פונקציה מרכזית לטעינת נתונים
 async function loadDashboardData() {
     try {
-        // שליפת כל האירועים מהשרת (נניח שיש לך נתיב GET /events שמחזיר את כולם)
         const response = await fetch(`${API_URL}/events`);
         const events = await response.json();
 
@@ -45,20 +44,23 @@ function renderStatsAndTable(events) {
     const now = new Date();
     let activeCount = 0;
     let pastCount = 0;
-    let totalTickets = 0; // תלוי אם יש לך שדה כרטיסים שנמכרו במודל
+    let totalTickets = 0; 
 
     events.forEach(event => {
         const eventDate = new Date(event.date);
         const isPast = eventDate < now; // בדיקה האם האירוע עבר
 
-        // עדכון מונים לסטטיסטיקה
         if (isPast) pastCount++; else activeCount++;
         if (event.soldTickets) totalTickets += event.soldTickets;
 
-        // יצירת שורת טבלה
+        // ✨ יצירת נתיב מלא לתמונה מהשרת (או תמונת דיפולט אם אין)
+        const imageUrl = event.image ? `${API_URL}/${event.image}` : 'https://via.placeholder.com/50';
+
+        // יצירת שורת טבלה (הוספנו עמודת תמונה)
         const tr = document.createElement('tr');
         
         tr.innerHTML = `
+            <td><img src="${imageUrl}" alt="תמונה" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px;"></td>
             <td><strong>${event.title}</strong></td>
             <td>${new Date(event.date).toLocaleString('he-IL', { dateStyle: 'short', timeStyle: 'short' })}</td>
             <td>${event.location || 'האולם הראשי'}</td>
@@ -76,7 +78,6 @@ function renderStatsAndTable(events) {
         tableBody.appendChild(tr);
     });
 
-    // עדכון כרטיסי המספרים למעלה
     document.getElementById('stat-active-events').textContent = activeCount;
     document.getElementById('stat-past-events').textContent = pastCount;
     document.getElementById('stat-tickets-sold').textContent = totalTickets;
@@ -88,14 +89,42 @@ document.getElementById('logout-btn').addEventListener('click', () => {
     window.location.href = 'login.html';
 });
 
-// פונקציות זמניות לפעולות (נחבר אותן לשרת בהמשך)
 function editEvent(id) {
     window.location.href = `admin-event-form.html?id=${id}`;
 }
 
+// ✨ חיבור מלא למחיקה החכמה שלכן (כולל דרישת סיבת ביטול ועדכון הארנקים)
 async function deleteEvent(id) {
-    if (confirm('האם אתה בטוח שברצונך למחוק אירוע זה?')) {
-        // כאן נכתוב את ה-fetch למחיקה בהמשך
-        alert(`נשלחה בקשת מחיקה עבור אירוע: ${id}`);
+    const cancellationReason = prompt('חובה לציין סיבת ביטול למחיקת המופע וזיכוי הלקוחות:');
+    
+    if (cancellationReason === null) return; // המנהל לחץ ביטול בחלונית
+    
+    if (cancellationReason.trim() === "") {
+        alert('לא ניתן למחוק מופע ללא ציון סיבת ביטול!');
+        return;
+    }
+
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_URL}/events/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ cancellationReason })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            alert(data.message || 'המופע בוטל והלקוחות זוכו בהצלחה!');
+            loadDashboardData(); // רענון הטבלה
+        } else {
+            alert(data.error || 'שגיאה במחיקת המופע');
+        }
+    } catch (err) {
+        console.error(err);
+        alert('שגיאה בתקשורת עם השרת בזמן המחיקה');
     }
 }

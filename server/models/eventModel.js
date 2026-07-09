@@ -29,10 +29,11 @@ const eventSchema = new mongoose.Schema({
         required: [true, 'חובה להזין את כמות המקומות באולם'],
         min: [1, 'חובה שיהיה לפחות מקום אחד באולם']
     },
-    image: {
-        type: String, // שומרים כתובת URL של התמונה/פוסטר
-        default: 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=500' // תמונת ברירת מחדל יפה אם לא יועלה פוסטר
-    }
+image: {
+    type: String,
+    // ✨ מעכשיו: אם לא נשלחה תמונה, מונגו ישמור אוטומטית את הנתיב המקומי הזה
+    default: 'uploads/default-event.jpg' 
+}
 }, { 
     timestamps: true 
 });

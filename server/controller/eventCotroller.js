@@ -2,14 +2,31 @@ const Event = require('../models/eventModel');
 const Ticket = require('../models/ticketModel');
 const User = require('../models/userModel');
 
-// 1. הוספת מופע חדש (מנהל)
+// 1. הוספת מופע חדש (מנהל) + תמיכה בהעלאת תמונה
 exports.createEvent = async (req, res) => {
     try {
-        // ✨ תיקון: חילוץ השדות החדשים מתוך ה-body שהגיע מהפרונטאנד
-        const { title, artist, date, price, description, totalSeats, image } = req.body;
+        // חילוץ השדות מתוך ה-body שהגיע מהפרונטאנד
+        const { title, artist, date, price, description, totalSeats } = req.body;
         
-        // ✨ תיקון: העברת כל השדות ליצירת המופע החדש במונגו
-        const newEvent = new Event({ title, artist, date, price, description, totalSeats, image });
+        let imagePath;
+        // ✨ שילוב: בדיקה האם המנהל העלה קובץ תמונה מהמחשב באמצעות multer
+        if (req.file) {
+            imagePath = req.file.path; // ישמור במונגו נתיב כמו: "uploads/image-1234567.jpg"
+        } else if (req.body.image) {
+            imagePath = req.body.image; // גיבוי: למקרה שבכל זאת נשלח קישור טקסטואלי
+        }
+
+        // העברת כל השדות, כולל נתיב התמונה החדש, ליצירת המופע במונגו
+        const newEvent = new Event({ 
+            title, 
+            artist, 
+            date, 
+            price, 
+            description, 
+            totalSeats, 
+            image: imagePath 
+        });
+        
         await newEvent.save();
         
         res.status(201).json({ message: 'המופע נוצר בהצלחה!', event: newEvent });
@@ -41,12 +58,20 @@ exports.getEventById = async (req, res) => {
     }
 };
 
-// 4. עדכון פרטי מופע (מנהל)
+// 4. עדכון פרטי מופע (מנהל) + תמיכה בהחלפת תמונה
 exports.updateEvent = async (req, res) => {
     try {
+        // מעתיקים את כל השדות שהגיעו בטקסט לעדכון
+        const updateData = { ...req.body };
+
+        // ✨ שילוב: בדיקה האם המנהל העלה קובץ תמונה חדש בזמן העדכון
+        if (req.file) {
+            updateData.image = req.file.path; // דורסים את התמונה הישנה בנתיב החדש
+        }
+
         const updatedEvent = await Event.findByIdAndUpdate(
             req.params.id, 
-            req.body, 
+            updateData, 
             { new: true, runValidators: true }
         );
         

@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ניהול אירוע | פורטל אירועים</title>
-<link rel="stylesheet" href="../css/admin-event-form.css">
+    <link rel="stylesheet" href="../css/admin-event-form.css">
 </head>
 <body>
-<div class="navbar">
+    <div class="navbar">
         <h1 id="page-title">יצירת אירוע חדש</h1>
         <a href="admin-dashboard.html" class="back-btn">חזרה ללוח הבקרה</a>
     </div>
@@ -21,7 +21,7 @@
             <form id="event-form">
                 <div class="input-group">
                     <label for="title">שם האירוע / המופע</label>
-                    <input type="text" id="title" placeholder="לדוגמה: ערב סטנדאפ, כנס קיץ..." required>
+                    <input type="text" id="title" placeholder="לדוגמה: ערב סטנדאפ, ככנס קיץ..." required>
                 </div>
 
                 <div class="input-group">
@@ -52,8 +52,9 @@
                 </div>
 
                 <div class="input-group">
-                    <label for="image">קישור לתמונת פוסטר (URL)</label>
-                    <input type="url" id="image" placeholder="הדביקו קישור לתמונה מאינטרנט (http://...)">
+                    <label for="image">העלאת תמונת פוסטר</label>
+                    <input type="file" id="image" accept="image/*">
+                    <small id="current-image-status" style="display: block; color: #aaa; margin-top: 5px;"></small>
                 </div>
 
                 <div class="input-group">
@@ -61,7 +62,7 @@
                     <textarea id="description" rows="3" placeholder="ספרו קצת על המופע..."></textarea>
                 </div>
 
-                <button type="submit" class="submit-btn" id="save-btn">פתחת אירוע חדש</button>
+                <button type="submit" class="submit-btn" id="save-btn">פתיחת אירוע חדש</button>
             </form>
         </div>
     </div>
