@@ -169,6 +169,7 @@ function updateCheckoutSummary() {
     priceSpan.innerText = `₪${selectedSeats.length * eventPrice}`;
     checkoutBtn.disabled = false;
 }
+
 // 5. רכישה מקצועית בזמן אמת, הנפקת כרטיסים ועדכון ה-Database
 document.getElementById('checkout-button').addEventListener('click', async () => {
     const userId = localStorage.getItem('userId');
@@ -185,6 +186,7 @@ document.getElementById('checkout-button').addEventListener('click', async () =>
     for (let seat of selectedSeats) {
         if (seat.num === 2) {
             const neighbor1 = document.getElementById(`${seat.row}-1`);
+            // בודק אם כיסא 1 פנוי ב-DB (יש לו קלאס available) והוא לא נבחר כרגע על ידינו
             if (neighbor1 && neighbor1.classList.contains('available') && !neighbor1.classList.contains('selected')) {
                 alert(`חוק המקומות המבודדים: לא ניתן להשאיר את כיסא 1 בשורה ${seat.row} בודד ומיותר.`);
                 return;
@@ -201,54 +203,44 @@ document.getElementById('checkout-button').addEventListener('click', async () =>
 
     // ג. שליחת הנתונים ל-Backend לעדכון אמיתי בבסיס הנתונים!
     try {
-        let allSuccess = true;
-        let lastWalletBalance = userWalletBalance;
-        let ticketReceipt = `🎉 הרכישה בוצעה בהצלחה!\n\nהונפקו עבורך קודי כניסה דיגיטליים לאולם:\n`;
+        const seatIdsToBuy = selectedSeats.map(s => s.id);
 
-        // רצים בלולאה על כל הכיסאות שהמשתמש בחר ושולחים אותם אחד אחד לנתיב של חברה שלך
-        for (let seat of selectedSeats) {
+        // 1. עדכון המושבים התפוסים של המופע בשרת
+        const eventRes = await fetch(`${API_URL}/events/${eventId}/book`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ seats: seatIdsToBuy })
+        });
+
+        // 2. חיוב הארנק של המשתמש בשרת דרך נתיב ה-topup הקיים!
+        const userRes = await fetch(`${API_URL}/users/${userId}/topup`, {
+          method: 'PUT',
+          headers: { 
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('token')}` // חובה בשביל ה-checkAuth בשרת
+          },
+          body: JSON.stringify({ amount: -totalPrice }) // שולח מינוס כדי להוריד מהיתרה
+        });
+
+        if (eventRes.ok && userRes.ok) {
+            // 🎉 הרכישה הצליחה בבסיס הנתונים! כעת ננפיק קודי כניסה ייחודיים בלייב
+            let ticketReceipt = `🎉 הרכישה בוצעה בהצלחה!\n\nהונפקו עבורך קודי כניסה דיגיטליים לאולם:\n`;
             
-            // המרת אות השורה (A-F) למספר (1-6) כי ככה השרת שלכן דורש בבדיקות שלו!
-            const rowMap = { 'A': 1, 'B': 2, 'C': 3, 'D': 4, 'E': 5, 'F': 6 };
-            const rowNumber = rowMap[seat.row] || 1;
-
-            const response = await fetch(`${API_URL}/tickets/book`, {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}` // חובה בשביל ה-checkAuth בשרת
-                },
-                body: JSON.stringify({ 
-                    eventId: eventId,
-                    userId: userId,
-                    row: rowNumber,
-                    column: seat.num
-                })
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                lastWalletBalance = data.newWalletBalance; // מעדכנים את היתרה העדכנית ביותר שהשרת החזיר
-                
-                // ייצור קוד רנדומלי עבור הכרטיס שהצליח
+            selectedSeats.forEach(seat => {
+                // ייצור קוד רנדומלי מאובטח עבור כל כרטיס (למשל: TKT-A2-9F8A)
                 const randomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
                 const ticketCode = `TKT-${seat.id}-${randomCode}`;
+                
                 ticketReceipt += `📍 שורה וכיסא: ${seat.id} 👈 קוד כניסה: ${ticketCode}\n`;
-
+                
                 // שינוי המצב במסך לתפוס קבוע
                 seat.element.classList.remove('selected');
                 seat.element.classList.add('occupied');
-            } else {
-                allSuccess = false;
-                const errorData = await response.json();
-                alert(`שגיאה ברכישת כיסא ${seat.id}: ${errorData.error || 'שגיאה כללית'}`);
-                break; // עוצרים את הלולאה אם כיסא אחד נכשל
-            }
-        }
+            });
 
-        if (allSuccess) {
             // ד. עדכון הארנק על המסך בלייב מהערך החדש שחזר מהשרת
-            userWalletBalance = lastWalletBalance;
+            const updatedUserData = await userRes.json();
+            userWalletBalance = updatedUserData.walletBalance;
             document.getElementById('user-wallet-display').innerText = `יתרה בארנק: ₪${userWalletBalance}`;
 
             // הצגת קודי הכרטיסים במכה אחת למשתמש
@@ -257,6 +249,8 @@ document.getElementById('checkout-button').addEventListener('click', async () =>
             // איפוס הבחירה להזמנה הבאה
             selectedSeats = [];
             updateCheckoutSummary();
+        } else {
+            alert('שגיאה בתהליך העסקה מול השרת. אנא נסי שוב.');
         }
 
     } catch (err) {
