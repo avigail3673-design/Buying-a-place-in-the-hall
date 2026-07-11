@@ -1,6 +1,7 @@
 const Event = require('../models/eventModel');
 const Ticket = require('../models/ticketModel');
 const User = require('../models/userModel');
+const Transaction = require('../models/transactionModel'); // ייבוא מודל העסקאות
 
 // 1. הוספת מופע חדש (מנהל) + תמיכה בהעלאת תמונה
 exports.createEvent = async (req, res) => {
@@ -84,7 +85,7 @@ exports.updateEvent = async (req, res) => {
     }
 };
 
-// 5. מחיקת מופע חכמה + סיבת ביטול חובה + החזר כספי יעיל (מנהל)
+// 5. מחיקת מופע חכמה + סיבת ביטול חובה + החזר כספי ותיעוד עסקאות (מנהל)
 exports.deleteEvent = async (req, res) => {
     try {
         const eventId = req.params.id;
@@ -99,19 +100,33 @@ exports.deleteEvent = async (req, res) => {
             return res.status(404).json({ error: 'המופע לא נמצא' });
         }
 
+        // שליפת כל הכרטיסים שנרכשו לאירוע הזה
         const tickets = await Ticket.find({ eventId: eventId });
 
         if (tickets.length > 0) {
-            const userIds = tickets.map(ticket => ticket.userId);
+            // רצה על כל כרטיס בנפרד כדי לבצע זיכוי מנומק ויצירת שורת עו"ש
+            for (let ticket of tickets) {
+                // 1. זיכוי ארנק המשתמש הספציפי בערך הכרטיס
+                await User.findByIdAndUpdate(
+                    ticket.userId,
+                    { $inc: { walletBalance: event.price } }
+                );
 
-            await User.updateMany(
-                { _id: { $in: userIds } },
-                { $inc: { walletBalance: event.price } }
-            );
+                // 2. יצירת רשומת עסקה (היסטוריית כספים) מסוג זיכוי/החזר
+                const refundTransaction = new Transaction({
+                    userId: ticket.userId,
+                    type: 'refund', // סוג העסקה: החזר/זיכוי
+                    amount: event.price,
+                    description: `החזר כספי אוטומטי - ביטול מופע: ${event.title} (סיבה: ${cancellationReason})`
+                });
+                await refundTransaction.save();
+            }
             
+            // אחרי שכולם זוכו ותועדו, מוחקים את כל הכרטיסים של המופע מה-DB
             await Ticket.deleteMany({ eventId: eventId });
         }
 
+        // מחיקת המופע עצמו
         await Event.findByIdAndDelete(eventId);
 
         res.status(200).json({ 
@@ -119,7 +134,7 @@ exports.deleteEvent = async (req, res) => {
             reason: cancellationReason,
             ticketsCanceled: tickets.length,
             refundAmountPerTicket: event.price,
-            detailedMessage: `האירוע בוטל מהסיבה: "${cancellationReason}". ${tickets.length} כרטיסים בוטלו והלקוחות זוכו בארנק הדיגיטלי.`
+            detailedMessage: `האירוע בוטל מהסיבה: "${cancellationReason}". ${tickets.length} כרטיסים בוטלו, הלקוחות זוכו בארנק והיסטוריית העסקאות עודכנה.`
         });
 
     } catch (err) {

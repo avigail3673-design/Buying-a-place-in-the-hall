@@ -25,5 +25,6 @@ const transactionSchema = new mongoose.Schema({
         default: Date.now // תאריך הפעולה אוטומטי לזמן הנוכחי (שנת 2026)
     }
 });
-
-module.exports = mongoose.model('Transaction', transactionSchema);
+// יצירת המודל וייצוא שלו
+const Transaction = mongoose.model('Transaction', transactionSchema);
+module.exports = Transaction;
