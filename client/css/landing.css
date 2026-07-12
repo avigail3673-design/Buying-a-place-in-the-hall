@@ -1,206 +1,205 @@
+/* --- 1. משתנים גלובליים --- */
 :root {
-    /* נשתמש בלוח צבעים של כחול לילה עמוק */
-    --bg-dark: #020617;          /* כחול-שחור כמעט כהה מאוד */
-    --bg-gradient: linear-gradient(135deg, #0f172a 0%, #020617 100%);
-    --card-bg: rgba(15, 23, 42, 0.7); /* כחול כהה שקוף לכרטיסים */
+    --bg-dark: #020617;
+    --card-bg: rgba(15, 23, 42, 0.6);
     --accent-gold: #c5a059;
-    --accent-blue: #3b82f6;      /* כחול מואר יותר למבטאים */
+    --accent-blue: #3b82f6;
     --text-light: #f1f5f9;
 }
 
 body {
-    background: var(--bg-gradient); /* רקע עם עומק כחול */
+    background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
     color: var(--text-light);
     font-family: 'Heebo', sans-serif;
     margin: 0;
     min-height: 100vh;
-    cursor: none;
+    cursor: none; /* סמן מוסתר לטובת הסמן המואר */
 }
-/* עיצוב ההילה המוארת */
+
+/* --- 2. סמן עכבר מואר --- */
 .cursor-glow {
     position: fixed;
-    width: 20px;
-    height: 20px;
+    width: 20px; height: 20px;
     background: var(--accent-blue);
     border-radius: 50%;
-    pointer-events: none; /* כדי שהאלמנט לא יפריע ללחיצות */
+    pointer-events: none;
     box-shadow: 0 0 20px 10px var(--accent-blue);
     z-index: 9999;
-    transition: transform 0.1s ease;
+    transition: transform 0.1s ease, background 0.3s;
 }
-/* אפקט התרחבות בעת לחיצה */
-.cursor-glow.active {
-    transform: scale(1.5);
-    background: var(--accent-gold); /* משנה לזהב בלחיצה */
-    box-shadow: 0 0 30px 15px var(--accent-gold);
-}
+.cursor-glow.active { transform: scale(1.5); background: var(--accent-gold); box-shadow: 0 0 30px 15px var(--accent-gold); }
+.cursor-glow.hovering { transform: scale(2); border: 2px solid white; background: transparent; }
 
-/* אפקט מיוחד למעבר מעל כפתורים (ב-JS נפעיל את זה) */
-.cursor-glow.hovering {
-    transform: scale(2);
-    border: 2px solid white;
-    background: transparent;
-}
-/* עדכון ה-Header למראה תואם */
+/* --- 3. Header --- */
 .main-header {
-    background: rgba(2, 6, 23, 0.8); /* רקע כחול כהה שקוף */
-    border-bottom: 1px solid rgba(197, 160, 89, 0.2);
-}
-
-/* כרטיסי מופעים עם רקע כחול עמוק */
-.event-catalog-card {
-    background: var(--card-bg);
+    position: fixed; top: 0; width: 100%;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 5%;
+    background: rgba(2, 6, 23, 0.85);
     backdrop-filter: blur(15px);
-    border: 1px solid rgba(59, 130, 246, 0.2); /* גבול כחול עדין */
+    border-bottom: 1px solid rgba(197, 160, 89, 0.3);
+    z-index: 1000;
+    box-sizing: border-box;
 }
+.logo { font-size: 1.5rem; font-weight: 700; letter-spacing: 1px; }
+.nav-links a { color: var(--text-light); text-decoration: none; margin: 0 20px; transition: 0.3s; }
+.nav-links a:hover { color: var(--accent-gold); }
 
-/* אזור ראשי */
+/* --- 4. אזור ראשי (Hero) --- */
 .hero-section {
-    padding: 180px 20px;
-    text-align: center;
-    background: radial-gradient(circle at center, #1e1b4b 0%, #050505 70%);
+    padding: 180px 20px; text-align: center;
+    background: radial-gradient(circle at center, #1e1b4b 0%, #020617 70%);
+}
+.hero-section h1 { font-size: 4rem; margin-bottom: 20px; background: linear-gradient(to right, #fff, var(--accent-gold)); -webkit-background-clip: text; color: transparent; }
+
+/* --- 5. גריד וכרטיסים (Events & Features) --- */
+.events-grid, .features-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 30px;
+    padding: 80px 5%;
+    width: 90%;
+    margin: 0 auto;
 }
 
-.hero-section h1 {
-    font-size: 4rem;
-    margin-bottom: 20px;
-    background: linear-gradient(to right, #fff, var(--accent-gold));
-    /* -webkit-background-clip: text; */
-    color: transparent;
+.event-catalog-card, .feature-card, .featured-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(197, 160, 89, 0.2);
+    border-radius: 20px;
+    padding: 40px;
+    transition: all 0.3s ease;
 }
 
+.event-catalog-card:hover, .feature-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--accent-gold);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+/* --- 6. כפתורים ואלמנטים --- */
 .cta-btn {
     display: inline-block;
     padding: 15px 40px;
     border: 1px solid var(--accent-gold);
+    background: transparent;
     color: var(--accent-gold);
-    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
     transition: 0.3s;
 }
+.cta-btn:hover { background: var(--accent-gold); color: #000; }
 
-.cta-btn:hover {
-    background: var(--accent-gold);
-    color: #000;
-}
-
-/* אזור תוכן */
-.about-section {
-    padding: 100px 8%;
-    text-align: center;
-}
-
-.about-box {
-    max-width: 800px;
-    margin: 0 auto;
-    border-right: 3px solid var(--accent-blue);
-    padding-right: 30px;
-}
-
-/* כרטיסי מופעים */
-.events-section {
-    padding: 100px 8%;
-}
-
-.events-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
-}
-
-
-.event-catalog-card:hover {
-    transform: scale(1.05);
-    background: rgba(197, 160, 89, 0.05);
-    border-color: var(--accent-gold);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-}
-/* עיצוב כרטיסי יתרונות */
-.features-section {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    padding: 80px 8%;
-}
-
-.feature-card {
-    padding: 30px;
-    border-bottom: 2px solid var(--accent-gold);
-    background: rgba(255,255,255,0.02);
-}
-
-/* עיצוב מופע הדגל */
-.featured-event-section {
-    padding: 80px 8%;
-}
-
-/* במקום מלבנים אטומים, נשתמש ב-Glassmorphism עדין עם רקע כהה */
-.feature-card, .featured-card {
-    background: rgba(15, 23, 42, 0.4); /* כחול כהה שקוף */
-    border: 1px solid rgba(197, 160, 89, 0.15); /* מסגרת זהב עדינה מאוד */
-    border-radius: 20px; /* פינות עגולות משנות את כל התחושה */
-    padding: 40px;
-    transition: transform 0.3s ease;
-}
-
-/* אפקט ריחוף (Hover) שנותן חיים */
-.feature-card:hover {
-    transform: translateY(-10px);
-    border-color: var(--accent-gold);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-}
 .badge {
     background: var(--accent-gold);
     color: #000;
     padding: 5px 15px;
     font-weight: bold;
     border-radius: 20px;
+    font-size: 0.8rem;
 }
 
+
+
+body {
+    background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
+    color: var(--text-light);
+    font-family: 'Heebo', sans-serif;
+    margin: 0;
+    min-height: 100vh;
+    cursor: none;
+}
+
+/* --- 2. ניווט וסרגל --- */
 .main-header {
-    position: fixed; /* שייצמד למעלה */
-    top: 0;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    position: fixed; top: 0; width: 100%;
+    display: flex; justify-content: space-between; align-items: center;
     padding: 20px 5%;
-    background: rgba(5, 5, 5, 0.7); /* שקיפות */
-    backdrop-filter: blur(15px); /* טשטוש יוקרתי */
-    border-bottom: 1px solid rgba(197, 160, 89, 0.3); /* קו זהב דקיק */
+    background: rgba(2, 6, 23, 0.85);
+    backdrop-filter: blur(15px);
+    border-bottom: 1px solid rgba(197, 160, 89, 0.3);
     z-index: 1000;
-    box-sizing: border-box;
 }
-
-.logo {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--text-light);
-    letter-spacing: 1px;
-}
-
-.nav-links a {
-    color: var(--text-light);
-    text-decoration: none;
-    margin: 0 20px;
-    font-size: 1rem;
-    transition: color 0.3s;
-}
-
-.nav-links a:hover {
-    color: var(--accent-gold);
-}
-
 .nav-login-btn {
-    background: transparent;
+    background: rgba(197, 160, 89, 0.1);
     border: 1px solid var(--accent-gold);
     color: var(--accent-gold);
-    padding: 10px 25px;
+    padding: 8px 25px;
+    border-radius: 25px;
     cursor: pointer;
-    font-weight: 600;
-    transition: all 0.3s;
+    transition: 0.3s;
 }
 
-.nav-login-btn:hover {
+/* --- 3. הופעה מרכזית (החמה של העונה) --- */
+.featured-card {
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    border: 1px solid var(--accent-gold);
+    padding: 60px;
+    text-align: center;
+    border-radius: 25px;
+    margin: 100px auto 50px auto;
+    max-width: 800px;
+}
+
+/* --- 4. אזור "הסטנדרט שלנו" --- */
+.about-box {
+    text-align: center;
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 40px;
+    border-top: 1px solid var(--accent-gold);
+    border-bottom: 1px solid var(--accent-gold);
+    color: #cbd5e1;
+    font-style: italic;
+}
+
+/* --- 5. גריד הופעות מסודר --- */
+.events-section { padding: 50px 8%; }
+
+.events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 30px;
+    align-items: stretch;
+}
+
+.event-catalog-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(197, 160, 89, 0.2);
+    border-radius: 20px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: 0.3s;
+}
+
+.event-catalog-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--accent-gold);
+}
+
+/* --- 6. כפתורים --- */
+.cta-btn {
+    margin-top: 20px;
+    padding: 12px 30px;
+    border: 1px solid var(--accent-gold);
+    background: transparent;
+    color: var(--accent-gold);
+    border-radius: 30px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.cta-btn:hover {
     background: var(--accent-gold);
     color: #000;
+}
+
+/* --- 7. סמן עכבר --- */
+.cursor-glow {
+    position: fixed; width: 20px; height: 20px;
+    background: var(--accent-blue);
+    border-radius: 50%;
+    pointer-events: none;
+    box-shadow: 0 0 20px 10px var(--accent-blue);
+    z-index: 9999;
 }
