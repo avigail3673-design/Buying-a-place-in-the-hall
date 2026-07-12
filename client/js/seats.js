@@ -177,12 +177,14 @@ function updateCheckoutSummary() {
 // 5. רכישה מול הקונטרולר המרכזי שמנפק מיילים ומעדכן עו"ש בפעולה אחת
 
 document.getElementById('checkout-button').addEventListener('click', async () => {
+    document.getElementById('loading-overlay').style.display = 'flex';
     const userId = localStorage.getItem('userId');
     const eventId = localStorage.getItem('currentEventId');
     const token = localStorage.getItem('token');
     const totalPrice = selectedSeats.length * eventPrice;
 
     if (userWalletBalance < totalPrice) {
+        document.getElementById('loading-overlay').style.display = 'none';
         alert(`הרכישה נכשלה. אין מספיק כסף בארנק.\nעלות: ₪${totalPrice}\nברשותך: ₪${userWalletBalance}`);
         return;
     }
@@ -192,6 +194,7 @@ document.getElementById('checkout-button').addEventListener('click', async () =>
         if (seat.num === 2) {
             const neighbor1 = document.getElementById(`${seat.rowLetter}-1`);
             if (neighbor1 && neighbor1.classList.contains('available') && !neighbor1.classList.contains('selected')) {
+                document.getElementById('loading-overlay').style.display = 'none';
                 alert(`חוק המקומות המבודדים: לא ניתן להשאיר את כיסא 1 בשורה ${seat.rowLetter} בודד.`);
                 return;
             }
@@ -199,6 +202,7 @@ document.getElementById('checkout-button').addEventListener('click', async () =>
         if (seat.num === (SEATS_PER_ROW - 1)) {
             const neighborMax = document.getElementById(`${seat.rowLetter}-${SEATS_PER_ROW}`);
             if (neighborMax && neighborMax.classList.contains('available') && !neighborMax.classList.contains('selected')) {
+                document.getElementById('loading-overlay').style.display = 'none';
                 alert(`חוק המקומות המבודדים: לא ניתן להשאיר את כיסא ${SEATS_PER_ROW} בשורה ${seat.rowLetter} בודד.`);
                 return;
             }
@@ -236,11 +240,13 @@ document.getElementById('checkout-button').addEventListener('click', async () =>
                 seat.element.classList.remove('selected');
                 seat.element.classList.add('occupied');
             } else {
+                document.getElementById('loading-overlay').style.display = 'none';
                 alert(`שגיאה ברכישת כיסא ${seat.id}: ${data.error}`);
             }
         }
 
         if (successCount > 0) {
+            document.getElementById('loading-overlay').style.display = 'none';
             alert(`🎉 כל הכרטיסים (${successCount}) נרכשו בהצלחה!\nאישורי הגעה וקודי הכניסה נשלחו אליך למייל ברגע זה.`);
             
             // עדכון יתרת הארנק החדשה שחזרה מהשרת
@@ -253,7 +259,12 @@ document.getElementById('checkout-button').addEventListener('click', async () =>
         }
 
     } catch (err) {
+        document.getElementById('loading-overlay').style.display = 'none';
         console.error('שגיאה בתקשורת עם השרת:', err);
         alert('לא ניתן היה להשלים את הרכישה בשרת.');
+    }
+    finally {
+        // --- הוספת השורה הזו בסוף, כדי להעלים את הפופאפ לאחר סיום הפעולה ---
+        document.getElementById('loading-overlay').style.display = 'none';
     }
 });
