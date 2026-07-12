@@ -4,11 +4,10 @@ const mongoose=require('mongoose');
 const path = require('path');
 const env=require('dotenv')
 env.config();
-app.use(express.static('../client'));
+
 const routerUser=require('./routes/userRouter')
 const routerEvent = require('./routes/eventRouter');
 const routerTicket = require('./routes/ticketRouter');
-// ייבוא הראוטר החדש (תוסיפי למעלה בשרת הראשי)
 const routertransaction = require('./routes/transactionRouter');
 
 
@@ -23,6 +22,7 @@ mongoose.connect(process.env.CONECTION_STRING,conectionParams)
 const cors = require('cors');
 app.use(express.json());
 app.use(cors()); 
+app.use(express.static('../client'));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(routerUser)
 app.use(routerEvent);

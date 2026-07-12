@@ -212,3 +212,76 @@ if (events.length === 0) {
         eventsGrid.innerHTML = '<div class="loading-status" style="color: #ef4444;">שגיאה בתקשורת עם השרת בזמן טעינת המופעים.</div>';
     }
 }
+async function fetchAndDisplayEvents() {
+    try {
+        const response = await fetch(`${API_URL}/events`);
+        const events = await response.json();
+        const eventsGrid = document.getElementById('dynamic-events-grid'); // זה האזור של הרשימה
+
+        // 1. טיפול במופע המרכזי (כפי שעשינו)
+        const today = new Date();
+        const upcomingEvents = events
+            .filter(event => new Date(event.date) >= today)
+            .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        if (upcomingEvents.length > 0) {
+            displayFeaturedEvent(upcomingEvents[0]);
+        }
+
+        // 2. הזרקת שאר המופעים לגריד (החלק שהיה חסר)
+        if (eventsGrid) {
+            eventsGrid.innerHTML = ''; // מנקים את מה שהיה שם קודם
+            
+            events.forEach(event => {
+                const eventCard = document.createElement('div');
+                eventCard.className = 'event-catalog-card';
+                eventCard.innerHTML = `
+                    <h3>${event.title}</h3>
+                    <p>תאריך: ${new Date(event.date).toLocaleDateString('he-IL')}</p>
+                    <p>מחיר: ${event.price} ₪</p>
+                    <button class="cta-btn" onclick="handleEventClick('${event.title}')">לשריין מקום</button>
+                `;
+                eventsGrid.appendChild(eventCard);
+            });
+        }
+    } catch (err) {
+        console.error("שגיאה בטעינת המופעים:", err);
+    }
+}
+
+function displayFeaturedEvent(event) {
+    const featuredSection = document.getElementById('featured-event-container');
+    if (!featuredSection) return;
+
+    const eventDate = new Date(event.date).toLocaleDateString('he-IL');
+    
+    featuredSection.innerHTML = `
+        <div class="featured-card">
+            <div class="featured-content">
+                <span class="badge">ההופעה הקרובה ביותר</span>
+                <h2>${event.title}</h2>
+                <p>אל תחמיצו את האירוע הקרוב בתאריך ה-${eventDate}. המקומות אוזלים מהר.</p>
+                <button class="cta-btn" onclick="handleEventClick('${event.title}')">שריינו מקום עכשיו</button>
+            </div>
+        </div>
+    `;
+}
+const cursor = document.querySelector('.cursor-glow');
+
+// מעקב אחרי העכבר
+document.addEventListener('mousemove', (e) => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+});
+
+// שינוי צבע בלחיצה
+document.addEventListener('mousedown', () => cursor.classList.add('active'));
+document.addEventListener('mouseup', () => cursor.classList.remove('active'));
+
+// זיהוי מעבר מעל כפתורים או כרטיסים
+const interactiveElements = document.querySelectorAll('button, .event-catalog-card');
+
+interactiveElements.forEach(el => {
+    el.addEventListener('mouseover', () => cursor.classList.add('hovering'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
+});

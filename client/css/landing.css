@@ -1,569 +1,206 @@
-/* ==========================================
-   1. משתנים והגדרות בסיס (Variables & Reset)
-   ========================================== */
 :root {
-    --primary-color: #4f46e5;
-    --primary-hover: #4338ca;
-    --bg-dark: #0f172a;
-    --text-main: #1e293b;
-    --text-light: #64748b;
-}
-
-* {
-    box-sizing: border-box;
+    /* נשתמש בלוח צבעים של כחול לילה עמוק */
+    --bg-dark: #020617;          /* כחול-שחור כמעט כהה מאוד */
+    --bg-gradient: linear-gradient(135deg, #0f172a 0%, #020617 100%);
+    --card-bg: rgba(15, 23, 42, 0.7); /* כחול כהה שקוף לכרטיסים */
+    --accent-gold: #c5a059;
+    --accent-blue: #3b82f6;      /* כחול מואר יותר למבטאים */
+    --text-light: #f1f5f9;
 }
 
 body {
-    margin: 0;
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    background-color: #f8fafc;
-    color: var(--text-main);
-}
-
-/* מבנה חלוקה שווה לכל אזור מרכזי בעמוד */
-.scroll-section {
-    min-height: 65vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 80px 8%;
-}
-
-/* ==========================================
-   2. תפריט ניווט עליון (Header & Navigation)
-   ========================================== */
-.main-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 8%;
-    background: white;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.logo { 
-    font-size: 1.4rem; 
-    font-weight: bold; 
-    color: var(--primary-color); 
-}
-
-.nav-links a { 
-    margin: 0 15px; 
-    color: var(--text-light); 
-    text-decoration: none; 
-    font-weight: 500; 
-}
-
-.nav-links a:hover { 
-    color: var(--primary-color); 
-}
-
-.nav-login-btn { 
-    background: transparent; 
-    border: 2px solid var(--primary-color); 
-    color: var(--primary-color); 
-    padding: 8px 18px; 
-    border-radius: 6px; 
-    cursor: pointer; 
-    font-weight: bold; 
-    transition: 0.2s; 
-}
-
-.nav-login-btn:hover { 
-    background: var(--primary-color); 
-    color: white; 
-}
-
-/* ==========================================
-   3. אזור ראשי (Hero Section)
-   ========================================== */
-.hero-section { 
-    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); 
-    color: white; 
-    text-align: center; 
-    padding: 120px 20px; 
-}
-
-.hero-section h1 { 
-    font-size: 3rem; 
-    margin-bottom: 20px; 
-}
-
-.hero-section p { 
-    font-size: 1.2rem; 
-    max-width: 600px; 
-    margin: 0 auto 40px; 
-    opacity: 0.9; 
-    line-height: 1.6;
-}
-
-.cta-btn { 
-    background: #f59e0b; 
-    color: white; 
-    padding: 14px 30px; 
-    font-size: 1.1rem; 
-    text-decoration: none; 
-    border-radius: 8px; 
-    font-weight: bold; 
-    box-shadow: 0 4px 15px rgba(245,158,11,0.3); 
-    transition: 0.2s; 
-}
-
-.cta-btn:hover { 
-    background: #d97706; 
-    transform: translateY(-2px); 
-}
-
-/* ==========================================
-   4. חוויית הבוטיק (About Section)
-   ========================================== */
-.about-section {
-    background-color: #ffffff;
-}
-
-.about-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 50px;
-    width: 100%;
-    max-width: 1200px;
-}
-
-.about-text {
-    flex: 1;
-    text-align: right;
-}
-
-.about-text h2 {
-    font-size: 2.2rem;
-    color: var(--primary-color);
-    margin-bottom: 20px;
-}
-
-.about-text h2::after {
-    content: '';
-    display: block; /* תוקן מ-document */
-    width: 60px;
-    height: 4px;
-    background: #f59e0b;
-    margin-top: 8px;
-    border-radius: 2px;
-}
-
-.about-text p {
-    font-size: 1.1rem;
-    line-height: 1.8;
-    color: var(--text-main);
-    margin-bottom: 15px;
-}
-
-.about-image-wrapper {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-}
-
-.about-hall-img {
-    width: 100%;
-    max-width: 500px;
-    height: 320px;
-    object-fit: cover;
-    border-radius: 12px;
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-}
-
-.about-hall-img:hover {
-    transform: scale(1.02);
-}
-
-/* ==========================================
-   5. סטטיסטיקות (Stats Section)
-   ========================================== */
-.stats-section {
-    background: #f8fafc;
-    flex-direction: row !important; 
-    gap: 100px;
-}
-
-.stat-card {
-    text-align: center;
-}
-
-.stat-card h3 {
-    font-size: 2.8rem;
-    color: var(--primary-color);
-    margin: 0;
-}
-
-.stat-card p {
+    background: var(--bg-gradient); /* רקע עם עומק כחול */
     color: var(--text-light);
-    font-size: 1.1rem;
-    margin: 8px 0 0;
+    font-family: 'Heebo', sans-serif;
+    margin: 0;
+    min-height: 100vh;
+    cursor: none;
+}
+/* עיצוב ההילה המוארת */
+.cursor-glow {
+    position: fixed;
+    width: 20px;
+    height: 20px;
+    background: var(--accent-blue);
+    border-radius: 50%;
+    pointer-events: none; /* כדי שהאלמנט לא יפריע ללחיצות */
+    box-shadow: 0 0 20px 10px var(--accent-blue);
+    z-index: 9999;
+    transition: transform 0.1s ease;
+}
+/* אפקט התרחבות בעת לחיצה */
+.cursor-glow.active {
+    transform: scale(1.5);
+    background: var(--accent-gold); /* משנה לזהב בלחיצה */
+    box-shadow: 0 0 30px 15px var(--accent-gold);
 }
 
-/* ==========================================
-   6. אלמנט עיצובי: הפס האלכסוני (Divider)
-   ========================================== */
-.diagonal-divider {
-    width: 100%;
-    height: 120px;
-    background: linear-gradient(90deg, #2563eb 0%, #4f46e5 100%); 
-    clip-path: polygon(0 25%, 100% 0, 100% 75%, 0 100%); 
-    margin: 20px 0;
+/* אפקט מיוחד למעבר מעל כפתורים (ב-JS נפעיל את זה) */
+.cursor-glow.hovering {
+    transform: scale(2);
+    border: 2px solid white;
+    background: transparent;
+}
+/* עדכון ה-Header למראה תואם */
+.main-header {
+    background: rgba(2, 6, 23, 0.8); /* רקע כחול כהה שקוף */
+    border-bottom: 1px solid rgba(197, 160, 89, 0.2);
 }
 
-/* ==========================================
-   7. קטלוג המופעים הדינמי (Events Showcase)
-   ========================================== */
-.events-preview-section {
-    background-color: #ffffff;
-    justify-content: flex-start; 
+/* כרטיסי מופעים עם רקע כחול עמוק */
+.event-catalog-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(59, 130, 246, 0.2); /* גבול כחול עדין */
 }
 
-.section-header {
+/* אזור ראשי */
+.hero-section {
+    padding: 180px 20px;
     text-align: center;
-    margin-bottom: 50px; 
+    background: radial-gradient(circle at center, #1e1b4b 0%, #050505 70%);
 }
 
-.section-header h2 {
-    font-size: 2.2rem;
-    color: #0f172a;
-    margin-bottom: 10px;
-    font-weight: 700;
+.hero-section h1 {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    background: linear-gradient(to right, #fff, var(--accent-gold));
+    /* -webkit-background-clip: text; */
+    color: transparent;
 }
 
-.section-header p {
-    color: #64748b;
-    font-size: 1.1rem;
+.cta-btn {
+    display: inline-block;
+    padding: 15px 40px;
+    border: 1px solid var(--accent-gold);
+    color: var(--accent-gold);
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.cta-btn:hover {
+    background: var(--accent-gold);
+    color: #000;
+}
+
+/* אזור תוכן */
+.about-section {
+    padding: 100px 8%;
+    text-align: center;
+}
+
+.about-box {
+    max-width: 800px;
+    margin: 0 auto;
+    border-right: 3px solid var(--accent-blue);
+    padding-right: 30px;
+}
+
+/* כרטיסי מופעים */
+.events-section {
+    padding: 100px 8%;
 }
 
 .events-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-    gap: 35px; 
-    width: 100%;
-    max-width: 1200px;
-    justify-content: center;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
 }
 
-.loading-status {
-    grid-column: 1 / -1;
-    text-align: center;
-    color: var(--text-light);
-    font-size: 1.1rem;
-    padding: 40px;
-}
-
-/* עיצובי כרטיסי המופע הדינמיים */
-.event-catalog-card {
-    background: white;
-    border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05); 
-    border: 1px solid #e2e8f0;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
 
 .event-catalog-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
-}
-
-.card-image-wrapper {
-    position: relative;
-    width: 100%;
-    height: 200px; 
-    background-color: #f1f5f9;
-    overflow: hidden;
-}
-
-.catalog-event-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; 
-}
-
-/* ==========================================
-   8. חברות וארגונים (Partners)
-   ========================================== */
-.partners-section { 
-    background: #f1f5f9; 
-    padding: 60px 20px; 
-    text-align: center; 
-}
-
-.partners-section h2 {
-    font-size: 1.8rem;
-    margin-bottom: 25px;
-}
-
-.partners-logos { 
-    display: flex; 
-    justify-content: center; 
-    gap: 40px; 
-    font-size: 1.2rem; 
-    color: var(--text-light); 
-    font-weight: 600; 
-    flex-wrap: wrap; 
-}
-
-.partner-logo {
-    background: white;
-    padding: 10px 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-}
-
-/* ==========================================
-   9. מערכת המודאל המפוצל (Auth Modal)
-   ========================================== */
-.modal-overlay { 
-    position: fixed; 
-    top: 0; 
-    left: 0; 
-    width: 100%; 
-    height: 100%; 
-    background: rgba(15, 23, 42, 0.6); 
-    display: none; 
-    justify-content: center; 
-    align-items: center; 
-    z-index: 1000; 
-    backdrop-filter: blur(4px); 
-}
-
-.modal-card { 
-    background: white; 
-    border-radius: 16px; 
-    width: 850px; 
-    max-width: 95%; 
-    display: flex; 
-    overflow: hidden; 
-    position: relative; 
-    animation: slideUp 0.3s ease; 
-}
-
-.close-modal-x { 
-    position: absolute; 
-    top: 15px; 
-    left: 20px; 
-    font-size: 2rem; 
-    cursor: pointer; 
-    color: var(--text-light); 
-    z-index: 10; 
-}
-
-.close-modal-x:hover { 
-    color: black; 
-}
-
-.auth-info-side { 
-    background: linear-gradient(135deg, #4f46e5 0%, #312e81 100%); 
-    color: white; 
-    width: 40%; 
-    padding: 40px; 
-    display: flex; 
-    flex-direction: column; 
-    justify-content: center; 
-}
-
-.auth-info-side h2 { 
-    font-size: 1.8rem; 
-    margin-bottom: 15px; 
-    line-height: 1.3; 
-}
-
-.auth-info-side p { 
-    opacity: 0.85; 
-    line-height: 1.6; 
-    font-size: 0.95rem; 
-}
-
-.auth-form-side { 
-    width: 60%; 
-    padding: 40px; 
-    background: white; 
-}
-
-.form-header h3 { 
-    font-size: 1.6rem; 
-    margin: 0 0 5px 0; 
-}
-
-.form-header p { 
-    color: var(--text-light); 
-    margin: 0 0 25px 0; 
-    font-size: 0.9rem; 
-}
-
-.input-group { 
-    margin-bottom: 18px; 
-    display: flex; 
-    flex-direction: column; 
-}
-
-.input-group label { 
-    font-size: 0.9rem; 
-    margin-bottom: 6px; 
-    font-weight: 500; 
-}
-
-.input-group input { 
-    padding: 10px 12px; 
-    border: 1px solid #cbd5e1; 
-    border-radius: 6px; 
-    font-size: 1rem; 
-}
-
-.input-group input:focus { 
-    outline: 2px solid var(--primary-color); 
-}
-
-.forgot-password { 
-    display: block; 
-    text-align: left; 
-    font-size: 0.85rem; 
-    color: var(--primary-color); 
-    text-decoration: none; 
-    margin-bottom: 20px; 
-}
-
-.submit-btn { 
-    background: var(--primary-color); 
-    color: white; 
-    border: none; 
-    width: 100%; 
-    padding: 12px; 
-    font-size: 1rem; 
-    border-radius: 6px; 
-    font-weight: bold; 
-    cursor: pointer; 
-}
-
-.submit-btn:hover { 
-    background: var(--primary-hover); 
-}
-
-.form-footer { 
-    text-align: center; 
-    margin-top: 25px; 
-    font-size: 0.9rem; 
-    color: var(--text-light); 
-}
-
-.toggle-view-link { 
-    color: var(--primary-color); 
-    cursor: pointer; 
-    font-weight: bold; 
-    text-decoration: underline; 
-}
-
-/* ==========================================
-   10. אנימציות ורספונסיביות (Responsive)
-   ========================================== */
-@keyframes slideUp {
-    from { transform: translateY(30px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
-
-@media (max-width: 768px) {
-    .about-container {
-        flex-direction: column-reverse;
-        text-align: center;
-        gap: 30px;
-    }
-    .about-text {
-        text-align: center;
-    }
-    .about-text h2::after {
-        margin: 8px auto 0;
-    }
-    .stats-section {
-        flex-direction: column !important;
-        gap: 40px;
-    }
-    .modal-card { 
-        flex-direction: column; 
-    }
-    .auth-info-side { 
-        width: 100%; 
-        padding: 25px; 
-        text-align: center; 
-    }
-    .auth-form-side { 
-        width: 100%; 
-        padding: 25px; 
-    }
-}
-/* ==========================================
-   8. חברות וארגונים - קרוסלה רצה (Infinite Slider)
-   ========================================== */
-.partners-section { 
-    background: #f1f5f9; 
-    padding: 80px 0; /* מרווח גדול יותר שייתן לזה מקום */
-    text-align: center; 
-    overflow: hidden; /* מונע פסי גלילה במסך */
-}
-
-.partners-section h2 {
-    font-size: 1.8rem;
-    margin-bottom: 40px;
-    color: var(--text-main);
-}
-
-/* המעטפת החוסמת */
-.slider-container {
-    width: 100%;
-    overflow: hidden;
-    position: relative;
-    padding: 10px 0;
-}
-
-/* מסלול הריצה שזז באנימציה */
-.slider-track {
-    display: flex;
-    gap: 40px;
-    width: max-content; /* מאפשר לטור לגדול מעבר למסך */
-    animation: scrollLogos 25s linear infinite; /* מפעיל תנועה רציפה וקבועה */
-}
-
-/* הגדרת כל לוגו בנפרד */
-.partner-logo {
-    background: white;
-    padding: 15px 35px;
-    border-radius: 12px;
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: var(--text-light);
-    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    white-space: nowrap; /* מונע מהטקסט לרדת שורה */
-    transition: transform 0.2s;
-}
-
-/* אפקט נחמד - כשעומדים על לוגו התנועה לא עוצרת אבל הלוגו גדל קצת */
-.partner-logo:hover {
     transform: scale(1.05);
-    color: var(--primary-color);
+    background: rgba(197, 160, 89, 0.05);
+    border-color: var(--accent-gold);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+/* עיצוב כרטיסי יתרונות */
+.features-section {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 80px 8%;
 }
 
-/* האנימציה החכמה שמניעה את הפס שמאלה בצורה אינסופית */
-@keyframes scrollLogos {
-    0% {
-        transform: translateX(0);
-    }
-    100% {
-        /* זז בדיוק חצי מרוחב המעטפת (בגלל השכפול) ואז חוזר להתחלה בלי שירגישו */
-        transform: translateX(50%);
-    }
+.feature-card {
+    padding: 30px;
+    border-bottom: 2px solid var(--accent-gold);
+    background: rgba(255,255,255,0.02);
+}
+
+/* עיצוב מופע הדגל */
+.featured-event-section {
+    padding: 80px 8%;
+}
+
+/* במקום מלבנים אטומים, נשתמש ב-Glassmorphism עדין עם רקע כהה */
+.feature-card, .featured-card {
+    background: rgba(15, 23, 42, 0.4); /* כחול כהה שקוף */
+    border: 1px solid rgba(197, 160, 89, 0.15); /* מסגרת זהב עדינה מאוד */
+    border-radius: 20px; /* פינות עגולות משנות את כל התחושה */
+    padding: 40px;
+    transition: transform 0.3s ease;
+}
+
+/* אפקט ריחוף (Hover) שנותן חיים */
+.feature-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--accent-gold);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+.badge {
+    background: var(--accent-gold);
+    color: #000;
+    padding: 5px 15px;
+    font-weight: bold;
+    border-radius: 20px;
+}
+
+.main-header {
+    position: fixed; /* שייצמד למעלה */
+    top: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 5%;
+    background: rgba(5, 5, 5, 0.7); /* שקיפות */
+    backdrop-filter: blur(15px); /* טשטוש יוקרתי */
+    border-bottom: 1px solid rgba(197, 160, 89, 0.3); /* קו זהב דקיק */
+    z-index: 1000;
+    box-sizing: border-box;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-light);
+    letter-spacing: 1px;
+}
+
+.nav-links a {
+    color: var(--text-light);
+    text-decoration: none;
+    margin: 0 20px;
+    font-size: 1rem;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: var(--accent-gold);
+}
+
+.nav-login-btn {
+    background: transparent;
+    border: 1px solid var(--accent-gold);
+    color: var(--accent-gold);
+    padding: 10px 25px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.nav-login-btn:hover {
+    background: var(--accent-gold);
+    color: #000;
 }
