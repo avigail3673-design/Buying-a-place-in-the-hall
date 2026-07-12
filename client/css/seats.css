@@ -230,6 +230,7 @@ body {
     box-shadow: 0 0 12px rgba(255, 42, 95, 0.7) !important;
     cursor: not-allowed;
     opacity: 0.9;
+    cursor: not-allowed; /* 🚫 */
 }
 .seat.occupied .seat-cushion { 
     background: #ff6087; 

@@ -130,6 +130,9 @@ function generateHallGrid() {
 
 // 4. ניהול לחיצות ובדיקת חוקים
 function handleSeatClick(seatElement, seatId, rowNumber, seatNum) {
+    if (seatElement.classList.contains('occupied')) {
+        return;
+    }
     if (seatElement.classList.contains('selected')) {
         seatElement.classList.remove('selected');
         selectedSeats = selectedSeats.filter(s => s.id !== seatId);
@@ -172,7 +175,7 @@ function updateCheckoutSummary() {
 }
 
 // 5. רכישה מול הקונטרולר המרכזי שמנפק מיילים ומעדכן עו"ש בפעולה אחת
-// 5. רכישה ועדכון מול השרת
+
 document.getElementById('checkout-button').addEventListener('click', async () => {
     const userId = localStorage.getItem('userId');
     const eventId = localStorage.getItem('currentEventId');
