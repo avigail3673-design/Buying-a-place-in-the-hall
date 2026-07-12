@@ -203,3 +203,10 @@ body {
     box-shadow: 0 0 20px 10px var(--accent-blue);
     z-index: 9999;
 }
+.featured-event-img {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 15px;
+    margin: 20px 0;
+}

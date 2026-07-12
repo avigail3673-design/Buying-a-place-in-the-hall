@@ -237,6 +237,9 @@ async function fetchAndDisplayEvents() {
                 eventCard.className = 'event-catalog-card';
                 eventCard.innerHTML = `
                     <h3>${event.title}</h3>
+                   <img src="${event.image || 'upload/default-event.jpg'}" 
+                     alt="${event.title}" 
+                     class="event-img">
                     <p>תאריך: ${new Date(event.date).toLocaleDateString('he-IL')}</p>
                     <p>מחיר: ${event.price} ₪</p>
                     <button class="cta-btn" onclick="handleEventClick('${event.title}')">לשריין מקום</button>
@@ -256,10 +259,13 @@ function displayFeaturedEvent(event) {
     const eventDate = new Date(event.date).toLocaleDateString('he-IL');
     
     featuredSection.innerHTML = `
-        <div class="featured-card">
+<div class="featured-card">
             <div class="featured-content">
                 <span class="badge">ההופעה הקרובה ביותר</span>
                 <h2>${event.title}</h2>
+                <img src="${event.image || 'upload/default-event.jpg'}" 
+                     alt="${event.title}" 
+                     class="featured-event-img">
                 <p>אל תחמיצו את האירוע הקרוב בתאריך ה-${eventDate}. המקומות אוזלים מהר.</p>
                 <button class="cta-btn" onclick="handleEventClick('${event.title}')">שריינו מקום עכשיו</button>
             </div>
