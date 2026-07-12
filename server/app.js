@@ -27,7 +27,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(routerUser)
 app.use(routerEvent);
 app.use(routerTicket);
-app.use(routertransaction);
+app.use('/transactions', routertransaction);
 app.listen(4000,()=>{
     console.log('you are listening to port 4000')
 })

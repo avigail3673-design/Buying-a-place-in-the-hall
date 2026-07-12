@@ -10,17 +10,27 @@
 
     <header class="main-header">
         <h1>המופעים החמים של העונה</h1>
-        <div class="user-status" id="user-status">
+        
+        <!-- קופסה משותפת ששומרת על הכפתור והשם יחד באותה שורה -->
+        <div class="header-user-area">
+            <!-- כפתור העו"ש המעוצב שעבר לפה -->
+            <button onclick="window.location.href='wallet-history.html'" class="bank-statement-btn">
+                📊 לצפייה בתדפיס עו"ש
+            </button>
+            
+            <!-- מלבן הסטטוס המקורי עם ה-ID המדויק שה-JS שלך צריך -->
+            <div class="user-status" id="user-status">
+                <!-- כאן ה-JS שלכן יזריק אוטומטית את שם המשתמש -->
             </div>
+        </div>
     </header>
-      <div id="wallet-sidebar-card" class="wallet-card-sidebar">
-      <h3>💳 הארנק הדיגיטלי שלך</h3>
-      <p id="user-wallet-status">טוען יתרה...</p>
-      <button id="open-topup-btn" class="topup-btn">הטענת הארנק</button>
-      </div>
-<button onclick="window.location.href='wallet-history.html'" class="history-link-btn" style="background: none; border: none; color: #0b2240; text-decoration: underline; cursor: pointer; margin-top: 10px; font-weight: bold;">
-    📊 לצפייה בתדפיס עו"ש ופעולות לחצי כאן
-</button>
+
+    <div id="wallet-sidebar-card" class="wallet-card-sidebar">
+        <h3>💳 הארנק הדיגיטלי שלך</h3>
+        <p id="user-wallet-status">טוען יתרה...</p>
+        <button id="open-topup-btn" class="topup-btn">הטענת הארנק</button>
+    </div>
+    
     <main class="events-container" id="events-grid">
         <p class="loading">טוען מופעים מהשרת...</p>
     </main>

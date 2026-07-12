@@ -384,3 +384,36 @@ body {
         transform: translateY(0) scale(1);
     }
 }
+
+/* קופסת האב שמחזיקה את הכפתור ואת שם המשתמש יחד */
+.header-user-area {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* מרווח קבוע ויפה בין הכפתור למלבן השם */
+}
+
+/* עיצוב כפתור העו"ש החדש - תואם לסטייל העתידני שלכן */
+.bank-statement-btn {
+    background: rgba(68, 138, 255, 0.08); /* רקע כחלחל שקוף ועדין */
+    border: 1px solid rgba(68, 138, 255, 0.3); /* גבול כחול זוהר עדין */
+    color: #448aff; /* טקסט כחול זוהר */
+    padding: 10px 20px;
+    border-radius: 20px; /* תואם לקימור של מלבן המשתמש */
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+/* אפקט ריחוף (Hover) לכפתור */
+.bank-statement-btn:hover {
+    background: #448aff; /* הופך לכחול מלא */
+    color: #ffffff; /* טקסט לבן */
+    box-shadow: 0 0 15px rgba(68, 138, 255, 0.4); /* אפקט הילה זוהרת */
+    transform: translateY(-2px);
+}
+
+/* אפקט לחיצה */
+.bank-statement-btn:active {
+    transform: translateY(0);
+}

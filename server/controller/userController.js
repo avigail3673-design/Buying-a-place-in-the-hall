@@ -1,5 +1,5 @@
 const User = require('../models/userModel');
-const Transaction=require('../models/transactionModel');
+const Transaction = require('../models/transactionModel');
 const jwt = require('jsonwebtoken'); 
 const bcrypt = require('bcrypt'); // ספריית ההצפנה שמתואמת גם להרשמה וגם להתחברות
 

@@ -20,8 +20,13 @@ async function displayUserStatus() {
     }
 
     try {
-        // פנייה לנתיב שכתבתן בשרת: GET /users/:id
-        const response = await fetch(`${API_URL}/${userId}`);
+        // פנייה לנתיב שכתבתן בשרת כולל שליחת טוקן האבטחה למניעת שגיאת 401
+        const response = await fetch(`${API_URL}/users/${userId}`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+        
         if (response.ok) {
             const userData = await response.json();
             userStatusDiv.innerHTML = `שלום, <strong>${userData.fullName}</strong> | יתרה בארנק: <strong>₪${userData.walletBalance}</strong>`;
@@ -184,6 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // 🔥 הכל תקין! שולחים את הבקשה ל-PUT Route המעודכן עם /users/
+            
             try {
                 const response = await fetch(`${API_URL}/users/${userId}/topup`, {
                     method: 'PUT',
@@ -228,7 +234,13 @@ async function updateWalletSidebar() {
     }
 
     try {
-        const response = await fetch(`${API_URL}/users/${userId}`);
+        // פנייה לנתיב הצידי כולל שליחת טוקן האבטחה למניעת שגיאת 401
+        const response = await fetch(`${API_URL}/users/${userId}`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+        
         if (response.ok) {
             const userData = await response.json();
             if (walletStatusElement) {
@@ -239,4 +251,4 @@ async function updateWalletSidebar() {
     } catch (err) {
         console.error('שגיאה בשליפת יתרת ארנק לריבוע הצידי:', err);
     }
-}
+}C
