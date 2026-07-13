@@ -1,3 +1,4 @@
+
 /* --- 1. משתנים גלובליים --- */
 :root {
     --bg-dark: #020617;
@@ -50,7 +51,8 @@ body {
     padding: 180px 20px; text-align: center;
     background: radial-gradient(circle at center, #1e1b4b 0%, #020617 70%);
 }
-.hero-section h1 { font-size: 4rem; margin-bottom: 20px; background: linear-gradient(to right, #fff, var(--accent-gold)); -webkit-background-clip: text; color: transparent; }
+.hero-section h1 { font-size: 4rem; margin-bottom: 20px; background: linear-gradient(to right, #fff, var(--accent-gold));
+                   -webkit-background-clip: text; color: transparent; }
 
 /* --- 5. גריד וכרטיסים (Events & Features) --- */
 .events-grid, .features-section {
@@ -209,4 +211,59 @@ body {
     object-fit: cover;
     border-radius: 15px;
     margin: 20px 0;
+}
+/* העיצוב החדש למודאל הכללי */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    display: none; /* כברירת מחדל לא מוצג */
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* הפיכת ה-container לכרטיס מודאל */
+.auth-container {
+    background: #1a1a26;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    width: 90%;
+    max-width: 900px;
+    display: flex;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+}
+
+/* כפתור סגירה למודאל */
+.close-modal-main {
+    position: absolute;
+    top: 20px; right: 20px;
+    font-size: 2rem;
+    color: white;
+    cursor: pointer;
+    z-index: 10;
+}
+/* 1. הסתרת הסמן הרגיל של הדפדפן מכל המקומות האפשריים */
+body, 
+button, 
+a, 
+.cta-btn, 
+.nav-login-btn, 
+.event-catalog-card, 
+input, 
+textarea {
+    cursor: none !important;
+}
+
+/* 2. הבטחה שכל אלמנט הניתן ללחיצה יפעיל את אפקט ה-Hover על הסמן המואר */
+button:hover, 
+a:hover, 
+.cta-btn:hover, 
+.nav-login-btn:hover, 
+.event-catalog-card:hover {
+    cursor: none !important;
 }

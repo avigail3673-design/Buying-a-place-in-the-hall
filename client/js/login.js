@@ -1,35 +1,51 @@
 const API_URL = 'http://localhost:4000';
 
 // --------------------------------------------------------
+// ג. טעינת מופעים דינמית מה-Database לדף הנחיתה
+// --------------------------------------------------------
+document.addEventListener('DOMContentLoaded', () => {
+    // מפעיל את טעינת המופעים רק אם אנחנו בדף הנחיתה שכולל את הגריד
+    const eventsGrid = document.getElementById('dynamic-events-grid');
+    if (eventsGrid) {
+        fetchAndDisplayEvents(eventsGrid);
+    }
+});
+// --------------------------------------------------------
 // 1. ניהול מצבי תצוגה של המודאל (אורח / חסימה)
 // --------------------------------------------------------
-const authModal = document.getElementById('dynamic-auth-modal');
-const loginSubView = document.getElementById('login-sub-view');
+
 const registerSubView = document.getElementById('register-sub-view');
 const infoTitle = document.getElementById('modal-info-title');
 const infoText = document.getElementById('modal-info-text');
 
-// פתיחת המודאל במצב מסוים
-function openAuthModal(viewType) {
-    if (!authModal) return;
-    authModal.style.display = 'flex';
-    switchAuthView(viewType);
+const authModal = document.getElementById('auth-modal'); // השם המדויק מה-HTML שלך
+const loginPart = document.getElementById('login-part');
+const registerPart = document.getElementById('register-part');
+
+// פתיחת המודאל
+function openAuthModal() {
+   // אופציה א': ניתוב לעמוד התחברות נפרד
+    window.location.href = 'login.html';
+    // if (authModal) {
+    //     authModal.style.display = 'flex';
+    // }
 }
 
 // סגירת המודאל
 function closeAuthModal() {
-    if (!authModal) return;
-    authModal.style.display = 'none';
+    if (authModal) {
+        authModal.style.display = 'none';
+    }
 }
 
-// מעבר בין תתי-טפסים בתוך המודאל בצורה חלקה
-function switchAuthView(viewType) {
-    if (viewType === 'register') {
-        loginSubView.style.display = 'none';
-        registerSubView.style.display = 'block';
+// מעבר בין התחברות להרשמה
+function toggleAuthView() {
+    if (loginPart.style.display === 'none') {
+        loginPart.style.display = 'block';
+        registerPart.style.display = 'none';
     } else {
-        loginSubView.style.display = 'block';
-        registerSubView.style.display = 'none';
+        loginPart.style.display = 'none';
+        registerPart.style.display = 'block';
     }
 }
 
@@ -139,16 +155,6 @@ if (registerForm) {
     });
 }
 
-// --------------------------------------------------------
-// ג. טעינת מופעים דינמית מה-Database לדף הנחיתה
-// --------------------------------------------------------
-document.addEventListener('DOMContentLoaded', () => {
-    // מפעיל את טעינת המופעים רק אם אנחנו בדף הנחיתה שכולל את הגריד
-    const eventsGrid = document.getElementById('dynamic-events-grid');
-    if (eventsGrid) {
-        fetchAndDisplayEvents(eventsGrid);
-    }
-});
 
 async function fetchAndDisplayEvents(eventsGrid) {
     try {
@@ -274,20 +280,28 @@ function displayFeaturedEvent(event) {
 }
 const cursor = document.querySelector('.cursor-glow');
 
-// מעקב אחרי העכבר
-document.addEventListener('mousemove', (e) => {
-    cursor.style.left = e.clientX + 'px';
-    cursor.style.top = e.clientY + 'px';
+// הגנה: אם הסמן לא קיים ב-HTML, אל תריץ כלום
+if (cursor) {
+    document.addEventListener('mousemove', (e) => {
+        // שימוש ב-requestAnimationFrame מבטיח שהתזוזה תהיה חלקה
+        // ולא "תתקע" בגלל עומס על הדפדפן
+        requestAnimationFrame(() => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+    });
+}
+// שינוי הגישה: במקום לעבור על רשימה סגורה, נאזין לכל העמוד
+document.addEventListener('mouseover', (e) => {
+    // בודק אם האלמנט שמתחת לעכבר הוא כפתור או כרטיס
+    if (e.target.matches('button, .event-catalog-card, .cta-btn, .nav-login-btn')) {
+        cursor.classList.add('hovering');
+    }
 });
 
-// שינוי צבע בלחיצה
-document.addEventListener('mousedown', () => cursor.classList.add('active'));
-document.addEventListener('mouseup', () => cursor.classList.remove('active'));
-
-// זיהוי מעבר מעל כפתורים או כרטיסים
-const interactiveElements = document.querySelectorAll('button, .event-catalog-card');
-
-interactiveElements.forEach(el => {
-    el.addEventListener('mouseover', () => cursor.classList.add('hovering'));
-    el.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
+document.addEventListener('mouseout', (e) => {
+    // בודק אם יצאנו מאלמנט אינטראקטיבי
+    if (e.target.matches('button, .event-catalog-card, .cta-btn, .nav-login-btn')) {
+        cursor.classList.remove('hovering');
+    }
 });
