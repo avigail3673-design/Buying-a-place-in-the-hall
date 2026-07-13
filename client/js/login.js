@@ -243,7 +243,8 @@ async function fetchAndDisplayEvents() {
                 eventCard.className = 'event-catalog-card';
                 eventCard.innerHTML = `
                     <h3>${event.title}</h3>
-                   <img src="${event.image || 'upload/default-event.jpg'}" 
+                <img src="${event.image || 'upload/default-event.jpg'}" 
+                   <img src="${event.image}" alt="${event.title}" class="event-img">
                      alt="${event.title}" 
                      class="event-img">
                     <p>תאריך: ${new Date(event.date).toLocaleDateString('he-IL')}</p>
@@ -305,3 +306,4 @@ document.addEventListener('mouseout', (e) => {
         cursor.classList.remove('hovering');
     }
 });
+
