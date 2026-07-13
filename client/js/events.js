@@ -1,4 +1,5 @@
 const API_URL = 'http://localhost:4000';
+let allEvents = []; // משתנה גלובלי לשמירת כל המופעים לצורך סינון
 
 document.addEventListener('DOMContentLoaded', () => {
     // 1. נציג את פרטי המשתמש המחובר מה-localStorage
@@ -47,56 +48,102 @@ async function fetchEvents() {
         // פנייה לנתיב שכתבתן בשרת: GET /events
         const response = await fetch(`${API_URL}/events`);
         const events = await response.json();
-
-        // ניקוי הודעת הטעינה
-        eventsGrid.innerHTML = '';
-
-        if (!events || events.length === 0) {
-            eventsGrid.innerHTML = '<p class="loading">אין כרגע מופעים זמינים במערכת.</p>';
-            return;
-        }
-
-        // ריצה על כל המופעים שחזרו ובניית כרטיס HTML עבור כל אחד
-       events.forEach(event => {
-    // עיצוב תאריך קריא בעברית
-    const eventDate = new Date(event.date).toLocaleDateString('he-IL', {
-        year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
-    });
-
-    // בדיקה אם יש תמונה, אם אין - נשים תמונת ברירת מחדל יפה
-    const imageUrl = event.image 
-    ? `${API_URL}/${event.image}` 
-    : 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=500';
-
-    const card = document.createElement('div');
-    card.className = 'event-card';
-    card.innerHTML = `
-        <div class="event-img-container">
-            <img src="${imageUrl}" alt="${event.title}" class="event-img">
-        </div>
         
-        <div class="event-content">
-            <h2 class="event-title">${event.title}</h2>
-            <p class="event-artist">🎤 ${event.artist || 'אמן אורח'}</p>
-            <p class="event-description">${event.description || 'אין תיאור זמין למופע זה.'}</p>
-            
-            <div class="event-meta">
-                <span>📅 ${eventDate}</span>
-                <span>📍 ${event.location || 'האולם הראשי'}</span>
-            </div>
-            
-            <div class="event-footer">
-                <p class="event-price">₪${event.price}</p>
-                <button class="order-btn" onclick="goToSeatSelection('${event._id}')">להזמנת מקומות</button>
-            </div>
-        </div>
-    `;
-    eventsGrid.appendChild(card);
-});
+        // שמירת המופעים במשתנה הגלובלי לצורך החיפוש
+        allEvents = events;
+
+        // קריאה לפונקציית התצוגה
+        renderEvents(allEvents);
+
     } catch (err) {
         console.error('שגיאה בטעינת מופעים:', err);
         eventsGrid.innerHTML = '<p class="loading" style="color: #ff4a4a;">שגיאה בחיבור לשרת או בטעינת המופעים.</p>';
     }
+}
+
+// פונקציה שמקבלת מערך של מופעים ומציגה אותם במסך
+function renderEvents(eventsToRender) {
+    const eventsGrid = document.getElementById('events-grid');
+    
+    // ניקוי הודעת הטעינה
+    eventsGrid.innerHTML = '';
+
+    if (!eventsToRender || eventsToRender.length === 0) {
+        eventsGrid.innerHTML = '<p class="loading">אין כרגע מופעים זמינים במערכת או לא נמצאו תוצאות לחיפוש.</p>';
+        return;
+    }
+
+    // התאריך והשעה של הרגע הזה ממש לצורך ההשוואה
+    const now = new Date();
+
+    // ריצה על כל המופעים שחזרו ובניית כרטיס HTML עבור כל אחד
+    eventsToRender.forEach(event => {
+        // המרת תאריך המופע לאובייקט תאריך כדי שנוכל להשוות
+        const eventDateObj = new Date(event.date);
+        
+        // עיצוב תאריך קריא בעברית
+        const eventDateString = eventDateObj.toLocaleDateString('he-IL', {
+            year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+        });
+
+        // בדיקה אם יש תמונה, אם אין - נשים תמונת ברירת מחדל יפה
+        const imageUrl = event.image 
+        ? `${API_URL}/${event.image}` 
+        : 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=500';
+
+        // 🔥 הבדיקה שלנו: האם המופע כבר עבר?
+        const isPastEvent = eventDateObj < now;
+
+        // הכנת הכפתור: אם עבר - כפתור אדום זורח ומנוטרל. אם לא עבר - הכפתור הרגיל
+        const buttonHtml = isPastEvent 
+            ? `<button class="order-btn" disabled style="background-color: #ff4a4a; color: #ffffff; cursor: not-allowed; border: none; box-shadow: 0 0 12px rgba(255, 74, 74, 0.8);">המופע עבר</button>`
+            : `<button class="order-btn" onclick="goToSeatSelection('${event._id}')">להזמנת מקומות</button>`;
+
+        const card = document.createElement('div');
+        card.className = 'event-card';
+        card.innerHTML = `
+            <div class="event-img-container">
+                <img src="${imageUrl}" alt="${event.title}" class="event-img">
+            </div>
+            
+            <div class="event-content">
+                <h2 class="event-title">${event.title}</h2>
+                <p class="event-artist">🎤 ${event.artist || 'אמן אורח'}</p>
+                <p class="event-description">${event.description || 'אין תיאור זמין למופע זה.'}</p>
+                
+                <div class="event-meta">
+                    <span>📅 ${eventDateString}</span>
+                    <span>📍 ${event.location || 'האולם הראשי'}</span>
+                </div>
+                
+                <div class="event-footer">
+                    <p class="event-price">₪${event.price}</p>
+                    ${buttonHtml} <!-- כאן אנחנו שותלים את הכפתור שהכנו -->
+                </div>
+            </div>
+        `;
+        eventsGrid.appendChild(card);
+    });
+}
+// פונקציית סינון המופעים לפי תיבת החיפוש
+function filterEvents() {
+    const searchTerm = document.getElementById('search-input').value.toLowerCase();
+    const searchType = document.getElementById('search-type').value;
+
+    const filtered = allEvents.filter(event => {
+        if (searchType === 'title') {
+            return event.title.toLowerCase().includes(searchTerm) || 
+                   (event.artist && event.artist.toLowerCase().includes(searchTerm));
+        } else if (searchType === 'date') {
+            const eventDate = new Date(event.date).toLocaleDateString('he-IL');
+            return eventDate.includes(searchTerm);
+        } else if (searchType === 'price') {
+            return String(event.price).includes(searchTerm);
+        }
+        return true;
+    });
+
+    renderEvents(filtered);
 }
 
 // מעבר לעמוד בחירת הכיסאות עם ה-ID של המופע הספציפי שנבחר
@@ -251,4 +298,4 @@ async function updateWalletSidebar() {
     } catch (err) {
         console.error('שגיאה בשליפת יתרת ארנק לריבוע הצידי:', err);
     }
-}C
+}

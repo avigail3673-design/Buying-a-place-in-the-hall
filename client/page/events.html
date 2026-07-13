@@ -23,7 +23,17 @@
                 <!-- כאן ה-JS שלכן יזריק אוטומטית את שם המשתמש -->
             </div>
         </div>
+    
     </header>
+
+    <div class="search-container">
+    <input type="text" id="search-input" placeholder="חיפוש מופע..." onkeyup="filterEvents()">
+    <select id="search-type" onchange="filterEvents()">
+        <option value="title">שם מופע / אמן</option>
+        <option value="date">תאריך</option>
+        <option value="price">מחיר</option>
+    </select>
+    </div>
 
     <div id="wallet-sidebar-card" class="wallet-card-sidebar">
         <h3>💳 הארנק הדיגיטלי שלך</h3>

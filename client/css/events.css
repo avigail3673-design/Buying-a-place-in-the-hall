@@ -417,3 +417,56 @@ body {
 .bank-statement-btn:active {
     transform: translateY(0);
 }
+/* הקונטיינר הכללי של החיפוש - ממוקם בצד ימין ואחד מתחת לשני */
+.search-container {
+    position: absolute; /* מאפשר מיקום חופשי בצד בלי להזיז את ריבוע הארנק שבמרכז */
+    right: 5%; /* מרחק מצד ימין של המסך */
+    margin-top: 30px; /* מרווח קטן מלמעלה, מתחת לקו ההידר */
+    display: flex;
+    flex-direction: column; /* מסדר את תיבות החיפוש אחת מתחת לשנייה */
+    gap: 12px; /* מרווח עדין בין התיבות */
+    width: 180px; /* קובע רוחב קטן ומוגדר לתיבות */
+    z-index: 10; /* מוודא שזה תמיד יהיה לחיץ ומעל אלמנטים אחרים */
+}
+
+/* עיצוב שדה ההקלדה (Input) ותיבת הבחירה (Select) - בגרסה מוקטנת */
+.search-container input,
+.search-container select {
+    background-color: rgba(10, 25, 47, 0.6); 
+    color: #ffffff; 
+    border: 1px solid #1d3b5e; 
+    padding: 6px 14px; /* פדינג קטן יותר למראה קומפקטי */
+    border-radius: 20px; /* פינות מעוגלות עדינות יותר */
+    font-family: inherit;
+    font-size: 13px; /* טקסט מעט קטן יותר */
+    outline: none;
+    transition: all 0.3s ease;
+    width: 100%; /* מוודא ששתי התיבות יהיו באותו רוחב בדיוק (180px) */
+    box-sizing: border-box; /* שומר שהפדינג לא יפרוץ את הרוחב */
+}
+
+/* עיצוב טקסט ה-Placeholder (הטקסט האפור בשדה החיפוש) */
+.search-container input::placeholder {
+    color: #8892b0; 
+}
+
+/* אפקט מודרני כשלוחצים או מרחפים על השדות (בדיוק כמו מקודם) */
+.search-container input:focus,
+.search-container select:focus,
+.search-container input:hover,
+.search-container select:hover {
+    border-color: #4facfe; 
+    box-shadow: 0 0 8px rgba(79, 172, 254, 0.3); 
+    background-color: rgba(10, 25, 47, 0.9); 
+}
+
+/* התאמה קטנה לתיבת הבחירה (Select) */
+.search-container select {
+    cursor: pointer;
+}
+
+/* עיצוב האפשרויות (Options) בתוך ה-Select כדי שיתאימו לעיצוב הכהה */
+.search-container select option {
+    background-color: #0a192f;
+    color: #ffffff;
+}
