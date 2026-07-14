@@ -107,17 +107,19 @@ exports.deleteEvent = async (req, res) => {
             // רצה על כל כרטיס בנפרד כדי לבצע זיכוי מנומק ויצירת שורת עו"ש
             for (let ticket of tickets) {
                 // 1. זיכוי ארנק המשתמש הספציפי בערך הכרטיס
-                await User.findByIdAndUpdate(
-                    ticket.userId,
-                    { $inc: { walletBalance: event.price } }
-                );
+               // 1. זיכוי ארנק המשתמש
+    await User.findByIdAndUpdate(
+        ticket.userId,
+        { $inc: { walletBalance: event.price } }
+    );
 
-                // 2. יצירת רשומת עסקה (היסטוריית כספים) מסוג זיכוי/החזר
-                const refundTransaction = new Transaction({
+    // 2. יצירת רשומת עסקה מפורטת
+   const refundTransaction = new Transaction({
                     userId: ticket.userId,
-                    type: 'refund', // סוג העסקה: החזר/זיכוי
+                    type: 'refund',
                     amount: event.price,
-                    description: `החזר כספי אוטומטי - ביטול מופע: ${event.title} (סיבה: ${cancellationReason})`
+                    description: `זיכוי עבור ביטול המופע: ${event.title}. סיבה: ${cancellationReason}`
+                    // createdAt יתמלא אוטומטית ע"י המודל
                 });
                 await refundTransaction.save();
             }
