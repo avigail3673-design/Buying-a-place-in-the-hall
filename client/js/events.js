@@ -199,20 +199,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const userId = localStorage.getItem('userId');
 
             if (!userId) {
-                alert('שגיאה: עליך להיות מחובר כדי לבצע הטענה.');
+                showPopup('שגיאה: עליך להיות מחובר כדי לבצע הטענה.');
                 return;
             }
 
             // בדיקה 1: סכום הטענה (מינימום 100 ₪, מקסימום 100,000 ₪)
             if (amount < 100 || amount > 100000) {
-                alert('שגיאה: סכום ההטענה המותר הוא בין 100 ₪ ל-100,000 ₪ בלבד.');
+                showPopup('שגיאה: סכום ההטענה המותר הוא בין 100 ₪ ל-100,000 ₪ בלבד.');
                 return;
             }
 
             // בדיקה 2: מספר אשראי (בדיוק 16 ספרות, רק מספרים)
             const isCardNumeric = /^\d+$/.test(cardNumber);
             if (cardNumber.length !== 16 || !isCardNumeric) {
-                alert('שגיאה: מספר כרטיס אשראי חייב להכיל בדיוק 16 ספרות (מספרים בלבד).');
+                showPopup('שגיאה: מספר כרטיס אשראי חייב להכיל בדיוק 16 ספרות (מספרים בלבד).');
                 return;
             }
 
@@ -224,14 +224,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const [expiryYear, expiryMonth] = cardExpiry.split('-').map(Number);
 
             if (expiryYear < currentYear || (expiryYear === currentYear && expiryMonth < currentMonth)) {
-                alert('שגיאה: כרטיס האשראי פג תוקף! יש להשתמש בכרטיס בתוקף.');
+                showPopup('שגיאה: כרטיס האשראי פג תוקף! יש להשתמש בכרטיס בתוקף.');
                 return;
             }
 
             // בדיקה 4: CVV (בדיוק 3 ספרות, רק מספרים)
             const isCvvNumeric = /^\d+$/.test(cardCvv);
             if (cardCvv.length !== 3 || !isCvvNumeric) {
-                alert('שגיאה: קוד CVV חייב להכיל בדיוק 3 ספרות.');
+                showPopup('שגיאה: קוד CVV חייב להכיל בדיוק 3 ספרות.');
                 return;
             }
 
@@ -248,7 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 if (response.ok) {
-                    alert(`איזה יופי! הארנק הוטען בהצלחה ב- ₪${amount}`);
+                    showPopup('הצלחה!', `איזה יופי! הארנק הוטען בהצלחה ב- ₪${amount}`);
                     modal.style.display = 'none'; // סגירת החלון
                     topupForm.reset(); // איפוס השדות בטופס
                     
@@ -257,12 +257,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (typeof displayUserStatus === 'function') displayUserStatus();
                 } else {
                     const errorData = await response.json();
-                    alert(errorData.error || 'שגיאה בעדכון היתרה בשרת');
+                    showPopup('שגיאה!', errorData.error || 'שגיאה בעדכון היתרה בשרת');
                 }
 
             } catch (err) {
                 console.error('שגיאה בתקשורת בהטענת הארנק:', err);
-                alert('שגיאה בחיבור לשרת, אנא נסה שנית.');
+                showPopup('שגיאה!', 'שגיאה בחיבור לשרת, אנא נסה שנית.');
             }
         });
     }
@@ -298,4 +298,14 @@ async function updateWalletSidebar() {
     } catch (err) {
         console.error('שגיאה בשליפת יתרת ארנק לריבוע הצידי:', err);
     }
+}
+
+function showPopup(title, message) {
+    document.getElementById('popup-title').innerText = title;
+    document.getElementById('popup-message').innerText = message;
+    document.getElementById('generic-popup').style.display = 'flex';
+}
+
+function closeGenericPopup() {
+    document.getElementById('generic-popup').style.display = 'none';
 }

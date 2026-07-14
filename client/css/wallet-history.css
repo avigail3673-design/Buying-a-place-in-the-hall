@@ -112,3 +112,33 @@ body {
 
 .loading-text, .error-text, .empty-text { text-align: center; padding: 30px !important; color: #666; font-style: italic; }
 .error-text { color: #dc3545; }
+        .loading-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.85); /* רקע כהה כמעט אטום */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.loading-popup {
+    background: #1b1c35bd; /* צבע כהה עמוק */
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    border: 1px solid #333; /* מסגרת דקה וכהה */
+    color: #fff; /* טקסט לבן שיהיה קריא על רקע כהה */
+    max-width: 400px;
+    width: 85%;
+}
+
+.loading-popup h2 {
+    font-family: sans-serif;
+    margin-bottom: 10px;
+}
+
+.loading-popup p {
+    font-family: sans-serif;
+    color: #448aff; /* טקסט אפור בהיר להרמוניה */
+}

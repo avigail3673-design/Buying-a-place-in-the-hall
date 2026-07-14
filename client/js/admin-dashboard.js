@@ -1,13 +1,39 @@
 const API_URL = 'http://localhost:4000';
+let currentCallback = null;
 
-// 1. אבטחת פרונטאנד: בדיקה שהמשתמש הוא אכן מנהל
+// --- פונקציות הפופ-אפ (זמינות גלובלית) ---
+window.showPopup = function(title, message, showInput = false, callback = null) {
+    document.getElementById('popup-title').innerText = title;
+    document.getElementById('popup-message').innerText = message;
+    
+    const inputField = document.getElementById('popup-input');
+    inputField.style.display = showInput ? 'block' : 'none';
+    inputField.value = ''; 
+    
+    document.getElementById('btn-confirm').style.display = callback ? 'inline-block' : 'none';
+    
+    currentCallback = callback;
+    document.getElementById('generic-popup').style.display = 'flex';
+}
+
+window.handleConfirm = function() {
+    const inputVal = document.getElementById('popup-input').value;
+    document.getElementById('generic-popup').style.display = 'none';
+    if (currentCallback) currentCallback(inputVal);
+}
+
+window.closeGenericPopup = function() {
+    document.getElementById('generic-popup').style.display = 'none';
+}
+
+// --- לוגיקת דאשבורד ---
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('token');
     const userRole = localStorage.getItem('userRole');
     const userName = localStorage.getItem('userName');
 
     if (!token || userRole !== 'admin') {
-        alert('גישה נדחתה. אזור זה מיועד למנהלים בלבד.');
+        showPopup('גישה נדחתה. אזור זה מיועד למנהלים בלבד.');
         window.location.href = 'login.html';
         return;
     }
@@ -16,47 +42,34 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('admin-name').textContent = `שלום, ${userName}`;
     }
 
-    // טעינת הנתונים מהשרת
     loadDashboardData();
 });
 
-// 2. פונקציה מרכזית לטעינת נתונים
 async function loadDashboardData() {
     try {
         const response = await fetch(`${API_URL}/events`);
         const events = await response.json();
-
         if (!response.ok) throw new Error('נכשלה שליפת האירועים');
-
         renderStatsAndTable(events);
-
     } catch (err) {
         console.error('שגיאה בטעינת הדאשבורד:', err);
-        alert('שגיאה בקבלת נתונים מהשרת');
+        showPopup('שגיאה בטעינה', 'שגיאה בקבלת נתונים מהשרת');
     }
 }
 
-// 3. רינדור הסטטיסטיקות והטבלה לפי התאריך הנוכחי
 function renderStatsAndTable(events) {
     const tableBody = document.getElementById('events-table-body');
-    tableBody.innerHTML = ''; // ניקוי הטבלה
-
+    tableBody.innerHTML = '';
     const now = new Date();
-    let activeCount = 0;
-    let pastCount = 0;
-    let totalTickets = 0; 
+    let activeCount = 0, pastCount = 0, totalTickets = 0;
 
     events.forEach(event => {
         const eventDate = new Date(event.date);
-        const isPast = eventDate < now; // בדיקה האם האירוע עבר
-
+        const isPast = eventDate < now;
         if (isPast) pastCount++; else activeCount++;
         if (event.soldTickets) totalTickets += event.soldTickets;
 
-        // ✨ יצירת נתיב מלא לתמונה מהשרת (או תמונת דיפולט אם אין)
         const imageUrl = event.image ? `${API_URL}/${event.image}` : 'https://via.placeholder.com/50';
-
-        // יצירת שורת טבלה (הוספנו עמודת תמונה)
         const tr = document.createElement('tr');
         
         tr.innerHTML = `
@@ -65,11 +78,7 @@ function renderStatsAndTable(events) {
             <td>${new Date(event.date).toLocaleString('he-IL', { dateStyle: 'short', timeStyle: 'short' })}</td>
             <td>${event.location || 'האולם הראשי'}</td>
             <td>₪${event.price}</td>
-            <td>
-                <span class="status-badge ${isPast ? 'status-past' : 'status-active'}">
-                    ${isPast ? 'הסתיים' : 'פעיל'}
-                </span>
-            </td>
+            <td><span class="status-badge ${isPast ? 'status-past' : 'status-active'}">${isPast ? 'הסתיים' : 'פעיל'}</span></td>
             <td>
                 <button class="action-btn edit-btn" ${isPast ? 'disabled' : ''} onclick="editEvent('${event._id}')">עריכה</button>
                 <button class="action-btn delete-btn" ${isPast ? 'disabled' : ''} onclick="deleteEvent('${event._id}')">מחיקה</button>
@@ -83,48 +92,44 @@ function renderStatsAndTable(events) {
     document.getElementById('stat-tickets-sold').textContent = totalTickets;
 }
 
-// 4. לוגיקת כפתור התנתקות
-document.getElementById('logout-btn').addEventListener('click', () => {
-    localStorage.clear();
-    window.location.href = 'login.html';
-});
+// --- פונקציית מחיקה (מתוקנת) ---
+window.deleteEvent = async function(id) {
+    showPopup('מחיקת מופע', 'נא להזין סיבה לביטול:', true, async (reason) => {
+        if (!reason || reason.trim() === "") {
+            showPopup('שגיאה', 'לא ניתן למחוק מופע ללא ציון סיבת ביטול!');
+            return;
+        }
+
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${API_URL}/events/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ cancellationReason: reason })
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                showPopup('הצלחה!', 'המופע בוטל והלקוחות זוכו בהצלחה!');
+                loadDashboardData();
+            } else {
+                showPopup('שגיאה', data.error || 'שגיאה במחיקת המופע');
+            }
+        } catch (err) {
+            console.error(err);
+            showPopup('שגיאה', 'שגיאה בתקשורת עם השרת');
+        }
+    });
+}
 
 function editEvent(id) {
     window.location.href = `admin-event-form.html?id=${id}`;
 }
 
-// ✨ חיבור מלא למחיקה החכמה שלכן (כולל דרישת סיבת ביטול ועדכון הארנקים)
-async function deleteEvent(id) {
-    const cancellationReason = prompt('חובה לציין סיבת ביטול למחיקת המופע וזיכוי הלקוחות:');
-    
-    if (cancellationReason === null) return; // המנהל לחץ ביטול בחלונית
-    
-    if (cancellationReason.trim() === "") {
-        alert('לא ניתן למחוק מופע ללא ציון סיבת ביטול!');
-        return;
-    }
-
-    try {
-        const token = localStorage.getItem('token');
-        const response = await fetch(`${API_URL}/events/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ cancellationReason })
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            alert(data.message || 'המופע בוטל והלקוחות זוכו בהצלחה!');
-            loadDashboardData(); // רענון הטבלה
-        } else {
-            alert(data.error || 'שגיאה במחיקת המופע');
-        }
-    } catch (err) {
-        console.error(err);
-        alert('שגיאה בתקשורת עם השרת בזמן המחיקה');
-    }
-}
+document.getElementById('logout-btn').addEventListener('click', () => {
+    localStorage.clear();
+    window.location.href = 'login.html';
+});

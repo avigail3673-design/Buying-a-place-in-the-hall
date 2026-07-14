@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const userRole = localStorage.getItem('userRole');
 
     if (!token || userRole !== 'admin') {
-        alert('גישה נדחתה. עמוד זה מיועד למנהלים בלבד.');
+        showPopup('גישה נדחתה', 'עמוד זה מיועד למנהלים בלבד.');
         window.location.href = 'login.html';
         return;
     }
@@ -52,7 +52,7 @@ async function loadEventData(id) {
         }
     } catch (err) {
         console.error('שגיאה בטעינת נתוני המופע:', err);
-        alert('שגיאה בטעינת נתוני האירוע');
+        showPopup('שגיאה בטעינה', 'שגיאה בקבלת נתונים מהשרת');
     }
 }
 
@@ -103,15 +103,24 @@ document.getElementById('event-form').addEventListener('submit', async (e) => {
         }
 
         if (response.ok) {
-            alert(eventId ? 'האירוע עודכן בהצלחה!' : 'האירוע נוצר בהצלחה!');
+            showPopup('הצלחה!', eventId ? 'האירוע עודכן בהצלחה!' : 'האירוע נוצר בהצלחה!');
             window.location.href = 'admin-dashboard.html'; 
         } else {
             const errorData = await response.json();
-            alert(errorData.error || 'שגיאה בשמירת האירוע');
+            showPopup('שגיאה בשמירה', errorData.error || 'שגיאה בשמירת האירוע');
         }
 
     } catch (err) {
         console.error('שגיאה בשליחת הטופס:', err);
-        alert('שגיאה בתקשורת עם השרת');
+        showPopup('שגיאה בתקשורת עם השרת', 'שגיאה בקבלת נתונים מהשרת');
     }
 });
+function showPopup(title, message) {
+    document.getElementById('popup-title').innerText = title;
+    document.getElementById('popup-message').innerText = message;
+    document.getElementById('generic-popup').style.display = 'flex';
+}
+
+function closeGenericPopup() {
+    document.getElementById('generic-popup').style.display = 'none';
+}

@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function loadUserStatus() {
     const userId = localStorage.getItem('userId');
     if (!userId) {
-        alert('משתמש לא מחובר! אנא התחבר מחדש.');
+        showPopup('משתמש לא מחובר! אנא התחבר מחדש.');
         window.location.href = 'login.html';
         return;
     }
@@ -44,7 +44,7 @@ async function loadUserStatus() {
 async function loadEventDetailsAndSeats() {
     const eventId = localStorage.getItem('currentEventId');
     if (!eventId) {
-        alert('לא נבחר מופע, מחזיר לעמוד המופעים');
+        showPopup('לא נבחר מופע', 'אנא בחר מופע מהעמוד הראשי');
         window.location.href = 'events.html';
         return;
     }
@@ -138,7 +138,7 @@ function handleSeatClick(seatElement, seatId, rowNumber, seatNum) {
         selectedSeats = selectedSeats.filter(s => s.id !== seatId);
     } else {
         if (selectedSeats.length >= 5) {
-            alert('לא ניתן לבחור יותר מ-5 מושבים לרכישה אחת.');
+            showPopup('לא ניתן לבחור יותר מ-5 מושבים', 'לא ניתן לבחור יותר מ-5 מושבים לרכישה אחת.');
             return;
         }
 
@@ -185,7 +185,7 @@ document.getElementById('checkout-button').addEventListener('click', async () =>
 
     if (userWalletBalance < totalPrice) {
         document.getElementById('loading-overlay').style.display = 'none';
-        alert(`הרכישה נכשלה. אין מספיק כסף בארנק.\nעלות: ₪${totalPrice}\nברשותך: ₪${userWalletBalance}`);
+        showPopup('הרכישה נכשלה', `אין מספיק כסף בארנק.\nעלות: ₪${totalPrice}\nברשותך: ₪${userWalletBalance}`);
         return;
     }
 
@@ -195,7 +195,7 @@ document.getElementById('checkout-button').addEventListener('click', async () =>
             const neighbor1 = document.getElementById(`${seat.rowLetter}-1`);
             if (neighbor1 && neighbor1.classList.contains('available') && !neighbor1.classList.contains('selected')) {
                 document.getElementById('loading-overlay').style.display = 'none';
-                alert(`חוק המקומות המבודדים: לא ניתן להשאיר את כיסא 1 בשורה ${seat.rowLetter} בודד.`);
+                showPopup('הרכישה נכשלה', `חוק המקומות המבודדים: לא ניתן להשאיר את כיסא 1 בשורה ${seat.rowLetter} בודד.`);
                 return;
             }
         }
@@ -203,7 +203,7 @@ document.getElementById('checkout-button').addEventListener('click', async () =>
             const neighborMax = document.getElementById(`${seat.rowLetter}-${SEATS_PER_ROW}`);
             if (neighborMax && neighborMax.classList.contains('available') && !neighborMax.classList.contains('selected')) {
                 document.getElementById('loading-overlay').style.display = 'none';
-                alert(`חוק המקומות המבודדים: לא ניתן להשאיר את כיסא ${SEATS_PER_ROW} בשורה ${seat.rowLetter} בודד.`);
+                showPopup('הרכישה נכשלה', `חוק המקומות המבודדים: לא ניתן להשאיר את כיסא ${SEATS_PER_ROW} בשורה ${seat.rowLetter} בודד.`);
                 return;
             }
         }
@@ -241,13 +241,13 @@ document.getElementById('checkout-button').addEventListener('click', async () =>
                 seat.element.classList.add('occupied');
             } else {
                 document.getElementById('loading-overlay').style.display = 'none';
-                alert(`שגיאה ברכישת כיסא ${seat.id}: ${data.error}`);
+                showPopup('שגיאה ברכישת כיסא', `שגיאה ברכישת כיסא ${seat.id}: ${data.error}`);
             }
         }
 
         if (successCount > 0) {
             document.getElementById('loading-overlay').style.display = 'none';
-            alert(`🎉 כל הכרטיסים (${successCount}) נרכשו בהצלחה!\nאישורי הגעה וקודי הכניסה נשלחו אליך למייל ברגע זה.`);
+            showPopup('הרכישה הושלמה בהצלחה!', `🎉 כל הכרטיסים (${successCount}) נרכשו בהצלחה!\nאישורי הגעה וקודי הכניסה נשלחו אליך למייל ברגע זה.`);
             
             // עדכון יתרת הארנק החדשה שחזרה מהשרת
             userWalletBalance = lastWalletBalance;
@@ -261,10 +261,19 @@ document.getElementById('checkout-button').addEventListener('click', async () =>
     } catch (err) {
         document.getElementById('loading-overlay').style.display = 'none';
         console.error('שגיאה בתקשורת עם השרת:', err);
-        alert('לא ניתן היה להשלים את הרכישה בשרת.');
+        showPopup('שגיאה בתקשורת', 'לא ניתן היה להשלים את הרכישה בשרת.');
     }
     finally {
         // --- הוספת השורה הזו בסוף, כדי להעלים את הפופאפ לאחר סיום הפעולה ---
         document.getElementById('loading-overlay').style.display = 'none';
     }
 });
+function showPopup(title, message) {
+    document.getElementById('popup-title').innerText = title;
+    document.getElementById('popup-message').innerText = message;
+    document.getElementById('generic-popup').style.display = 'flex';
+}
+
+function closeGenericPopup() {
+    document.getElementById('generic-popup').style.display = 'none';
+}

@@ -15,7 +15,7 @@
         <a href="#events">הופעות</a>
     </nav>
     
-    <button class="nav-login-btn" onclick="openAuthModal()">התחברות</button>
+    <button class="nav-login-btn" onclick="goToLogin()">התחברות</button>
 </header>
 
     <section class="hero-section">
@@ -54,41 +54,7 @@
         <div class="events-grid" id="dynamic-events-grid">
             </div>
     </section>
-<div id="auth-modal" class="modal-overlay">
-    <div class="auth-container">
-        <span class="close-modal-main" onclick="closeAuthModal()">&times;</span>
-        
-        <div class="auth-info-side">
-            <h2>האירועים הגדולים<br>מתחילים כאן</h2>
-            <p>הצטרפו אלינו לניהול הזמנות ועדכונים.</p>
-        </div>
 
-        <div class="auth-form-side">
-            <div id="login-part">
-                <h3>ברוכים הבאים</h3>
-                <form id="login-form">
-                    <div class="input-group">
-                        <input type="email" id="email" placeholder="אימייל" required>
-                    </div>
-                    <div class="input-group">
-                        <input type="password" id="password" placeholder="סיסמה" required>
-                    </div>
-                    <button type="submit" class="submit-btn">התחברות</button>
-                </form>
-                <div class="form-footer">
-                    אין חשבון? <span class="open-modal-btn" onclick="toggleAuthView()">יצירת חשבון</span>
-                </div>
-            </div>
-            
-            <div id="register-part" style="display:none;">
-                <h3>יצירת חשבון</h3>
-                <form id="register-form">
-                     <button type="submit" class="submit-btn">הירשמי</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-    <script src="../js/login.js"></script>
+    <script src="../js/index.js"></script>
 </body>
 </html>
