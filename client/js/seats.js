@@ -103,7 +103,7 @@ function generateHallGrid() {
             cushion.className = 'seat-cushion';
             seat.appendChild(cushion);
 
-            // ✨ הבדיקה המשולבת והחכמה של חברה שלך - מונעת שגיאות סוגי נתונים מה-DB
+            // ✨ הבדיקה המשולבת והחכמה - מונעת שגיאות סוגי נתונים מה-DB
             // בודק התאמה גם לפי אות וגם לפי מספר שורה
             const isOccupied = occupiedSeats.some(os => {
                 if (typeof os === 'string') {

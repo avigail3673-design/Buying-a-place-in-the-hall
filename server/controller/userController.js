@@ -119,12 +119,12 @@ exports.topupWallet = async (req, res) => {
             return res.status(404).json({ error: 'משתמש לא נמצא במערכת' });
         }
 
-        // ====== חיבור אוטומטי לעו"ש של חברה שלך (נקי מכפילויות) ======
+        // ====== חיבור אוטומטי לעו"ש  (נקי מכפילויות) ======
         const newTx = new Transaction({
             userId: userId,
             // אם זו קנייה (שלילי), נהפוך לחיובי (למשל 150) בשביל ה-summary והחישובים שלכן
             amount: isDeposit ? amount : Math.abs(amount), 
-            type: isDeposit ? 'deposit' : 'purchase', // הערכים המדויקים שחברה שלך בודקת!
+            type: isDeposit ? 'deposit' : 'purchase', // הערכים המדויקים !
             description: isDeposit ? 'טעינת ארנק דיגיטלי באשראי' : 'רכישת כרטיסים למופע',
             createdAt: new Date()
         });

@@ -71,7 +71,7 @@ function renderStatsAndTable(events) {
         const eventDate = new Date(event.date);
         const isPast = eventDate < now;
         if (isPast) pastCount++; else activeCount++;
-        if (event.soldTickets) totalTickets += event.soldTickets;
+        // if (event.soldTickets) totalTickets += event.soldTickets;
 
         const imageUrl = event.image ? `${API_URL}/${event.image}` : 'https://via.placeholder.com/50';
         const tr = document.createElement('tr');
