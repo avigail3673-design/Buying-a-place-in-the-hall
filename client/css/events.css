@@ -501,3 +501,15 @@ body {
     font-family: sans-serif;
     color: #448aff; /* טקסט אפור בהיר להרמוניה */
 }
+.buy-btn {
+    padding: 10px 25px;
+    border-radius: 20px; /* עיגול מלא לכפתורים */
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    margin: 5px;
+    transition: all 0.3s;
+    background: linear-gradient(90deg, #ff2a5f, #7c4dff);
+    color: #ffffff;
+    border: 1px solid #000000;
+}
