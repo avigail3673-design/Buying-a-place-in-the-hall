@@ -24,11 +24,11 @@ const eventSchema = new mongoose.Schema({
         type: String,
         default: '' // אם המנהל לא מזין, יישמר ריק ולא יקרוס
     },
-    totalSeats: {
-        type: Number,
-        required: [true, 'חובה להזין את כמות המקומות באולם'],
-        min: [1, 'חובה שיהיה לפחות מקום אחד באולם']
-    },
+    // totalSeats: {
+    //     type: Number,
+    //     required: [true, 'חובה להזין את כמות המקומות באולם'],
+    //     min: [1, 'חובה שיהיה לפחות מקום אחד באולם']
+    // },
 image: {
     type: String,
     // ✨ מעכשיו: אם לא נשלחה תמונה, מונגו ישמור אוטומטית את הנתיב המקומי הזה

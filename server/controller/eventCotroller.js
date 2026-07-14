@@ -7,7 +7,7 @@ const Transaction = require('../models/transactionModel'); // ייבוא מוד�
 exports.createEvent = async (req, res) => {
     try {
         // חילוץ השדות מתוך ה-body שהגיע מהפרונטאנד
-        const { title, artist, date, price, description, totalSeats } = req.body;
+        const { title, artist, date, price, description } = req.body;
         
         let imagePath;
         // ✨ שילוב: בדיקה האם המנהל העלה קובץ תמונה מהמחשב באמצעות multer
@@ -24,7 +24,7 @@ exports.createEvent = async (req, res) => {
             date, 
             price, 
             description, 
-            totalSeats, 
+            // totalSeats, 
             image: imagePath 
         });
         

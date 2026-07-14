@@ -37,7 +37,7 @@ async function loadEventData(id) {
         document.getElementById('artist').value = event.artist || ''; 
         document.getElementById('location').value = event.location || 'האולם המרכזי';
         document.getElementById('price').value = event.price;
-        document.getElementById('totalSeats').value = event.totalSeats || ''; 
+        // document.getElementById('totalSeats').value = event.totalSeats || ''; 
         document.getElementById('description').value = event.description || ''; 
         
         // הצגת סטטוס תמונה נוכחית אם קיימת
@@ -67,7 +67,7 @@ document.getElementById('event-form').addEventListener('submit', async (e) => {
     formData.append('date', document.getElementById('date').value);
     formData.append('location', document.getElementById('location').value);
     formData.append('price', document.getElementById('price').value);
-    formData.append('totalSeats', document.getElementById('totalSeats').value);
+    // formData.append('totalSeats', document.getElementById('totalSeats').value);
     formData.append('description', document.getElementById('description').value);
 
     // ✨ תפיסת קובץ התמונה האמיתי שהמנהל בחר
