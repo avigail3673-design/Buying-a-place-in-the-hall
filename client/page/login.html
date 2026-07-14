@@ -34,7 +34,7 @@
                     <input type="password" id="password" placeholder="הזינו סיסמה" required>
                 </div>
 
-                <a href="#" class="forgot-password">שכחתם סיסמה?</a>
+                <!-- <a href="#" class="forgot-password">שכחתם סיסמה?</a> -->
 
                 <button type="submit" class="submit-btn">התחברות למערכת</button>
             </form>
@@ -82,7 +82,13 @@
 
         </div>
     </div>
-    
+    <div id="generic-popup" class="loading-overlay" style="display: none;">
+    <div class="loading-popup">
+        <h2 id="popup-title">כותרת</h2>
+        <p id="popup-message"></p>
+        <button onclick="closeGenericPopup()" class="buy-btn" style="margin-top: 20px;">סגור</button>
+    </div>
+</div>
     <script src="../js/login.js"></script>
 </body>
 </html>

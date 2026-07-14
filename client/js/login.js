@@ -1,83 +1,10 @@
 const API_URL = 'http://localhost:4000';
 
-// --------------------------------------------------------
-// ג. טעינת מופעים דינמית מה-Database לדף הנחיתה
-// --------------------------------------------------------
-document.addEventListener('DOMContentLoaded', () => {
-    // מפעיל את טעינת המופעים רק אם אנחנו בדף הנחיתה שכולל את הגריד
-    const eventsGrid = document.getElementById('dynamic-events-grid');
-    if (eventsGrid) {
-        fetchAndDisplayEvents(eventsGrid);
-    }
-});
-// --------------------------------------------------------
-// 1. ניהול מצבי תצוגה של המודאל (אורח / חסימה)
-// --------------------------------------------------------
-
-const registerSubView = document.getElementById('register-sub-view');
-const infoTitle = document.getElementById('modal-info-title');
-const infoText = document.getElementById('modal-info-text');
-
-const authModal = document.getElementById('auth-modal'); // השם המדויק מה-HTML שלך
-const loginPart = document.getElementById('login-part');
-const registerPart = document.getElementById('register-part');
-
-// פתיחת המודאל
-function openAuthModal() {
-   // אופציה א': ניתוב לעמוד התחברות נפרד
-    window.location.href = 'login.html';
-    // if (authModal) {
-    //     authModal.style.display = 'flex';
-    // }
-}
-
-// סגירת המודאל
-function closeAuthModal() {
-    if (authModal) {
-        authModal.style.display = 'none';
-    }
-}
-
-// מעבר בין התחברות להרשמה
-function toggleAuthView() {
-    if (loginPart.style.display === 'none') {
-        loginPart.style.display = 'block';
-        registerPart.style.display = 'none';
-    } else {
-        loginPart.style.display = 'none';
-        registerPart.style.display = 'block';
-    }
-}
-
-// פונקציית היירט החכמה: מופעלת כשאורח לוחץ על הופעה!
-function handleEventClick(eventName) {
-    const token = localStorage.getItem('token');
-    
-    // אם הוא כבר מחובר, נעביר אותו ישר לדף האירועים המלא לבחירת מקום
-    if (token) {
-        window.location.href = 'events.html';
-        return;
-    }
-    
-    // אם הוא אורח - נשנה את תוכן הטקסט במודאל כדי שיהיה מותאם אישית ומקצועי, ונפתח אותו!
-    if (infoTitle && infoText) {
-        infoTitle.innerHTML = `רוצים להזמין מקום ל-${eventName}?`;
-        infoText.innerHTML = "כדי לבצע הזמנות, לשריין כרטיסים באולם ולנהל את הארנק הדיגיטלי שלך, יש להתחבר לחשבון או להירשם תוך שניות.";
-    }
-    
-    openAuthModal('login');
-}
-
-
-// --------------------------------------------------------
-// א. לוגיקת התחברות (Login) - מבוסס על הבסיס שלך
-// --------------------------------------------------------
+// 1. לוגיקת התחברות (Login)
 const loginForm = document.getElementById('login-form');
-
 if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         
@@ -89,40 +16,31 @@ if (loginForm) {
             });
 
             const data = await response.json();
-
             if (response.ok) {
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('userId', data.user._id);
                 localStorage.setItem('userName', data.user.fullName);
                 localStorage.setItem('userRole', data.user.role); 
 
-                alert(`ברוך הבא, ${data.user.fullName}!`);
-                closeAuthModal();
-                
                 if (data.user.role === 'admin') {
                     window.location.href = 'admin-dashboard.html'; 
                 } else {
                     window.location.href = 'events.html'; 
                 }
             } else {
-                alert(data.error || 'שגיאה בהתחברות');
+                showPopup('שגיאה בהתחברות', data.error || 'פרטי התחברות שגויים');
             }
         } catch (err) {
-            console.error('שגיאה:', err);
-            alert('לא ניתן להתחבר לשרת. ודאו שהשרת שלכן מופעל ב-VS Code!');
+            showPopup('שגיאה', 'לא ניתן להתחבר לשרת');
         }
     });
 }
 
-// --------------------------------------------------------
-// ב. לוגיקת הרשמה (Register) - מבוסס על הבסיס שלך
-// --------------------------------------------------------
+// 2. לוגיקת הרשמה (Register)
 const registerForm = document.getElementById('register-form');
-
 if (registerForm) {
     registerForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-
         const fullName = document.getElementById('reg-name').value;
         const phone = document.getElementById('reg-phone').value;
         const email = document.getElementById('reg-email').value;
@@ -136,174 +54,28 @@ if (registerForm) {
             });
 
             const data = await response.json();
-
             if (response.ok) {
-                alert('נרשמת בהצלחה למערכת! הארנק הדיגיטלי שלך נוצר עם יתרה של ₪0. כעת ניתן להתחבר.');
-                
+                showPopup('הצלחה!', 'נרשמת בהצלחה! כעת ניתן להתחבר.');
                 registerForm.reset();
-                switchAuthView('login'); // מעביר אותו אוטומטית למסך לוגין לאחר רישום
-                
-                const loginEmailInput = document.getElementById('email');
-                if (loginEmailInput) loginEmailInput.value = email;
+                // סגירת המודאל ע"י ביטול הצ'קבוקס
+                document.getElementById('modal-toggle').checked = false;
             } else {
-                alert(data.error || 'שגיאה בתהליך ההרשמה');
+                showPopup('שגיאה ברישום', data.error || 'שגיאה בתהליך ההרשמה');
             }
         } catch (err) {
-            console.error('שגיאה:', err);
-            alert('שגיאה בתקשורת עם השרת בזמן ההרשמה');
+            showPopup('שגיאה', 'שגיאה בתקשורת עם השרת');
         }
     });
 }
 
-
-async function fetchAndDisplayEvents(eventsGrid) {
-    try {
-        // פנייה לנתיב השרת שלך שמחזיר את כל המופעים (עדכני לפי הראוטר המדויק שלך, למשל /events)
-        const response = await fetch(`${API_URL}/events`); 
-        const events = await response.json();
-console.log("זה מה שהשרת מחזיר:", events);
-if (events.length === 0) {
-    eventsGrid.innerHTML = '<div class="loading-status">אין מופעים זמינים כרגע...</div>';
-    return;
-}
-        if (!response.ok) {
-            throw new Error(events.error || 'שגיאה בטעינת המופעים');
-        }
-
-        // אם אין מופעים בבסיס הנתונים
-        if (events.length === 0) {
-            eventsGrid.innerHTML = '<div class="loading-status">אין מופעים זמינים כרגע. נסו שוב מאוחר יותר!</div>';
-            return;
-        }
-
-        // ניקוי הודעת הטעינה
-        eventsGrid.innerHTML = '';
-
-        // ריצה על המופעים ובניית ה-HTML עבור כל כרטיס קטלוגי
-        events.forEach(event => {
-            const card = document.createElement('div');
-            card.className = 'event-catalog-card';
-            
-            // הגדרת לחיצה על הכרטיס שתפעיל את הבדיקה החכמה (אם הוא אורח או רשום)
-            card.onclick = () => handleEventClick(event.title || event.name);
-
-            // תמונת ברירת מחדל אם אין תמונה ייעודית ב-DB
-            const eventImage = event.image || 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=500&auto=format&fit=crop';
-            
-            // עיצוב מחיר עגול או מותאם
-            const price = event.price ? `₪${event.price}` : 'חינם';
-            
-            // פורמט תאריך קריא
-            const eventDate = event.date ? new Date(event.date).toLocaleDateString('he-IL') : 'תאריך יפורסם בהמשך';
-
-            card.innerHTML = `
-                <div class="card-image-wrapper">
-                    <img src="${eventImage}" alt="${event.title || event.name}" class="catalog-event-img">
-                </div>
-                <div class="card-content-area" style="padding: 20px; text-align: right;">
-                    <h3 style="margin: 0 0 10px 0; font-size: 1.3rem; color: #0f172a;">${event.title || event.name}</h3>
-                    <p style="margin: 0 0 15px 0; color: #64748b; font-size: 0.95rem;">📆 ${eventDate}</p>
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto;">
-                        <span style="font-weight: bold; color: #4f46e5; font-size: 1.2rem;">${price}</span>
-                        <button class="buy-ticket-btn" style="width: auto; margin-top: 0; padding: 8px 16px;">להזמנת מקום</button>
-                    </div>
-                </div>
-            `;
-            
-            eventsGrid.appendChild(card);
-        });
-
-    } catch (err) {
-        console.error('שגיאה בהבאת המופעים:', err);
-        eventsGrid.innerHTML = '<div class="loading-status" style="color: #ef4444;">שגיאה בתקשורת עם השרת בזמן טעינת המופעים.</div>';
-    }
-}
-async function fetchAndDisplayEvents() {
-    try {
-        const response = await fetch(`${API_URL}/events`);
-        const events = await response.json();
-        const eventsGrid = document.getElementById('dynamic-events-grid'); // זה האזור של הרשימה
-
-        // 1. טיפול במופע המרכזי (כפי שעשינו)
-        const today = new Date();
-        const upcomingEvents = events
-            .filter(event => new Date(event.date) >= today)
-            .sort((a, b) => new Date(a.date) - new Date(b.date));
-
-        if (upcomingEvents.length > 0) {
-            displayFeaturedEvent(upcomingEvents[0]);
-        }
-
-        // 2. הזרקת שאר המופעים לגריד (החלק שהיה חסר)
-        if (eventsGrid) {
-            eventsGrid.innerHTML = ''; // מנקים את מה שהיה שם קודם
-            
-            events.forEach(event => {
-                const eventCard = document.createElement('div');
-                eventCard.className = 'event-catalog-card';
-                eventCard.innerHTML = `
-                    <h3>${event.title}</h3>
-                <img src="${event.image || 'upload/default-event.jpg'}" 
-                   <img src="${event.image}" alt="${event.title}" class="event-img">
-                     alt="${event.title}" 
-                     class="event-img">
-                    <p>תאריך: ${new Date(event.date).toLocaleDateString('he-IL')}</p>
-                    <p>מחיר: ${event.price} ₪</p>
-                    <button class="cta-btn" onclick="handleEventClick('${event.title}')">לשריין מקום</button>
-                `;
-                eventsGrid.appendChild(eventCard);
-            });
-        }
-    } catch (err) {
-        console.error("שגיאה בטעינת המופעים:", err);
-    }
+// 3. פונקציות עזר לפופ-אפ (Generic Popup)
+function showPopup(title, message) {
+    const popup = document.getElementById('generic-popup');
+    document.getElementById('popup-title').innerText = title;
+    document.getElementById('popup-message').innerText = message;
+    popup.style.display = 'flex';
 }
 
-function displayFeaturedEvent(event) {
-    const featuredSection = document.getElementById('featured-event-container');
-    if (!featuredSection) return;
-
-    const eventDate = new Date(event.date).toLocaleDateString('he-IL');
-    
-    featuredSection.innerHTML = `
-<div class="featured-card">
-            <div class="featured-content">
-                <span class="badge">ההופעה הקרובה ביותר</span>
-                <h2>${event.title}</h2>
-                <img src="${event.image || 'upload/default-event.jpg'}" 
-                     alt="${event.title}" 
-                     class="featured-event-img">
-                <p>אל תחמיצו את האירוע הקרוב בתאריך ה-${eventDate}. המקומות אוזלים מהר.</p>
-                <button class="cta-btn" onclick="handleEventClick('${event.title}')">שריינו מקום עכשיו</button>
-            </div>
-        </div>
-    `;
+function closeGenericPopup() {
+    document.getElementById('generic-popup').style.display = 'none';
 }
-const cursor = document.querySelector('.cursor-glow');
-
-// הגנה: אם הסמן לא קיים ב-HTML, אל תריץ כלום
-if (cursor) {
-    document.addEventListener('mousemove', (e) => {
-        // שימוש ב-requestAnimationFrame מבטיח שהתזוזה תהיה חלקה
-        // ולא "תתקע" בגלל עומס על הדפדפן
-        requestAnimationFrame(() => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
-        });
-    });
-}
-// שינוי הגישה: במקום לעבור על רשימה סגורה, נאזין לכל העמוד
-document.addEventListener('mouseover', (e) => {
-    // בודק אם האלמנט שמתחת לעכבר הוא כפתור או כרטיס
-    if (e.target.matches('button, .event-catalog-card, .cta-btn, .nav-login-btn')) {
-        cursor.classList.add('hovering');
-    }
-});
-
-document.addEventListener('mouseout', (e) => {
-    // בודק אם יצאנו מאלמנט אינטראקטיבי
-    if (e.target.matches('button, .event-catalog-card, .cta-btn, .nav-login-btn')) {
-        cursor.classList.remove('hovering');
-    }
-});
-

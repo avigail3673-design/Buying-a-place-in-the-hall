@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const token = localStorage.getItem('token');
 
     if (!userId || !token) {
-        alert('עליך להיות מחובר כדי לצפות בדף זה.');
+        showPopup('לא מחובר', 'עליך להיות מחובר כדי לצפות בדף זה.');
         window.location.href = 'login.html';
         return;
     }
@@ -104,4 +104,11 @@ async function fetchAndDisplayHistory(userId, token) {
         console.error('שגיאה בעיבוד עו"ש:', err);
         rowsContainer.innerHTML = `<tr><td colspan="4" class="error-text">שגיאה בתקשורת עם השרת.</td></tr>`;
     }
+}
+// 3. פונקציות עזר לפופ-אפ (Generic Popup)
+function showPopup(title, message) {
+    const popup = document.getElementById('generic-popup');
+    document.getElementById('popup-title').innerText = title;
+    document.getElementById('popup-message').innerText = message;
+    popup.style.display = 'flex';
 }

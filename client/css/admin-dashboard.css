@@ -182,3 +182,72 @@
 
         .status-active { background-color: #dcfce7; color: #15803d; }
         .status-past { background-color: #f1f5f9; color: #64748b; }
+.loading-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.7); /* רקע כהה שקוף */
+    display: none; /* כברירת מחדל */
+    justify-content: center; /* מרכז אופקי */
+    align-items: center;     /* מרכז אנכי */
+    z-index: 9999;
+}
+ /* הרקע הכהה של הפופ-אפ */
+.loading-popup {
+   background: linear-gradient(#1b1c35, #1b1c35) padding-box, 
+                linear-gradient(135deg, #2563eb, #7c3aed) border-box;
+    border: 3px solid transparent; /* עובי המסגרת */
+    padding: 35px;
+    border-radius: 25px; /* פינות מעוגלות */
+    text-align: center;
+    border: 1px solid #334155;
+    color: white;
+    max-width: 400px;
+    width: 85%;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+}
+
+/* שדה הקלט - מעוגל ורך */
+#popup-input {
+    width: 85%;
+    padding: 12px 15px;
+    margin: 20px 0;
+    border: none;
+    border-radius: 20px; /* עיגול מלא */
+    background: rgba(255, 255, 255, 0.1); /* שקיפות עדינה */
+    color: white;
+    font-size: 15px;
+    text-align: center;
+}
+
+#popup-input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* עיצוב הכפתורים - מעוגלים וצבעוניים */
+.popup-btn {
+    padding: 10px 25px;
+    border-radius: 20px; /* עיגול מלא לכפתורים */
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    margin: 5px;
+    transition: all 0.3s;
+}
+
+/* גוונים שמתאימים לעיצוב הקודם (כחול ונגיעת ורוד/סגול) */
+#btn-confirm { 
+ background: rgba(255, 255, 255, 0.1); 
+    color: #a5fca5; /* גוון ורוד עדין לכפתור הביטול */
+    border: 1px solid #b4fca5;
+}
+
+#btn-close { 
+    background: rgba(255, 255, 255, 0.1); 
+    color: #fca5a5; /* גוון ורוד עדין לכפתור הביטול */
+    border: 1px solid #fca5a5;
+}  
+ /* background: linear-gradient(135deg, #2563eb, #7c3aed); מעבר כחול-סגול
+    color: white; 
+ transform: scale(1.05); */
+#btn-confirm:hover { background: #c8fca5; color: #1b1c35;  }
+#btn-close:hover { background: #fca5a5; color: #1b1c35; }

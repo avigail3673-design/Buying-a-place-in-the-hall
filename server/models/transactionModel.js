@@ -17,7 +17,7 @@ const transactionSchema = new mongoose.Schema({
         required: true // סכום חיובי תמיד (ההפרדה בין פלוס למינוס תהיה לפי ה-type)
     },
     description: {
-        type: String, // למשל: "טעינת ארנק דיגיטלי" או "רכישת כרטיס למופע: חנן בן ארי"
+        type: String, //למשל: "טעינת ארנק דיגיטלי" או "רכישת כרטיס למופע X" או "זיכוי עבור ביטול המופע Y"
         required: true
     },
     createdAt: {

@@ -57,7 +57,19 @@
         </div>
 
     </div>
-
+<div id="generic-popup" class="loading-overlay" style="display: none;">
+    <div class="loading-popup">
+        <h2 id="popup-title">כותרת</h2>
+        <p id="popup-message">הודעה</p>
+        
+        <input type="text" id="popup-input" placeholder="נא להזין סיבה..." style="display: none; width: 80%; padding: 10px; margin: 15px 0;">
+        
+            <div id="popup-buttons" style="margin-top: 20px;">
+                    <button id="btn-confirm" onclick="handleConfirm()" class="action-btn edit-btn" style="display: none; margin-left: 10px; padding: 10px 25px;">אישור</button>
+                    <button id="btn-close" onclick="closeGenericPopup()" class="action-btn delete-btn" style="padding: 10px 25px;">סגור</button>
+            </div>    
+    </div>
+</div>
     <script src="../js/admin-dashboard.js"></script>
 </body>
 </html>
