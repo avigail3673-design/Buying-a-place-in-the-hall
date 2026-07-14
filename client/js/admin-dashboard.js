@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('token');
     const userRole = localStorage.getItem('userRole');
     const userName = localStorage.getItem('userName');
-
+    
     if (!token || userRole !== 'admin') {
         showPopup('גישה נדחתה. אזור זה מיועד למנהלים בלבד.');
         window.location.href = 'login.html';
@@ -51,6 +51,10 @@ async function loadDashboardData() {
         const events = await response.json();
         if (!response.ok) throw new Error('נכשלה שליפת האירועים');
         renderStatsAndTable(events);
+        
+        // 🔥 החיבור המושלם: קריאה לפונקציית החישוב החדשה מיד לאחר טעינת ורינדור הנתונים הבסיסיים
+        await calculateTotalSoldTickets();
+        
     } catch (err) {
         console.error('שגיאה בטעינת הדאשבורד:', err);
         showPopup('שגיאה בטעינה', 'שגיאה בקבלת נתונים מהשרת');
@@ -133,3 +137,57 @@ document.getElementById('logout-btn').addEventListener('click', () => {
     localStorage.clear();
     window.location.href = 'login.html';
 });
+
+// פונקציה חכמה לחישוב סך כל הכרטיסים שנמכרו על בסיס נתיב המקומות התפוסים
+async function calculateTotalSoldTickets() {
+    try {
+        const token = localStorage.getItem('token');
+        
+        // 1. שליפת כל המופעים כדי לקבל את ה-ID של כל אחד מהם
+        const eventsResponse = await fetch(`${API_URL}/events`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!eventsResponse.ok) {
+            throw new Error('שגיאה בטעינת המופעים');
+        }
+
+        const events = await eventsResponse.json();
+        
+        // 2. פנייה במקביל לכל ה-API-ים לקבלת המקומות התפוסים
+        const fetchPromises = events.map(event => 
+            fetch(`${API_URL}/tickets/event/${event._id}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then(res => {
+                if (!res.ok) return []; // במקרה של שגיאה באירוע ספציפי, נחזיר מערך ריק ולא נכשיל את הכל
+                return res.json();
+            })
+        );
+
+        // 3. הרצה במקביל והמתנה לכל התוצאות
+        const allEventsTakenSeats = await Promise.all(fetchPromises);
+
+        // 4. סכימת המקומות התפוסים מכל האירועים יחד
+        let totalSoldTickets = 0;
+        allEventsTakenSeats.forEach(seatsArray => {
+            totalSoldTickets += seatsArray.length;
+        });
+
+        // 5. עדכון ה-HTML עם המספר הסופי (משתמש ב-ID המדויק מה-HTML שלך)
+        const totalTicketsElement = document.getElementById('stat-tickets-sold');
+        if (totalTicketsElement) {
+            totalTicketsElement.textContent = totalSoldTickets;
+        }
+
+    } catch (error) {
+        console.error('שגיאה בחישוב סך הכרטיסים:', error);
+        const totalTicketsElement = document.getElementById('stat-tickets-sold');
+        if (totalTicketsElement) {
+            totalTicketsElement.textContent = 'שגיאה';
+        }
+    }
+}
